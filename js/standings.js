@@ -65,8 +65,8 @@ const StandingsModule = (() => {
         <div class="stat-icon yellow">📅</div>
         <div class="stat-info">
           <div class="stat-label">本赛季</div>
-          <div class="stat-value">第26轮</div>
-          <div class="stat-sub">还剩 12 轮 · 2025/26</div>
+          <div class="stat-value">第27轮</div>
+          <div class="stat-sub">还剩 11 轮 · 2025/26</div>
         </div>
       </div>
     `;

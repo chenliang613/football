@@ -18,7 +18,15 @@
       "WebFetch(domain:fbref.com)",
       "WebFetch(domain:globalsportsarchive.com)",
       "WebFetch(domain:ooscore.com)",
-      "Bash(brew upgrade:*)"
+      "Bash(brew upgrade:*)",
+      "WebFetch(domain:www.flashscore.com)",
+      "WebFetch(domain:www.squawka.com)",
+      "WebFetch(domain:www.premierleague.com)",
+      "WebFetch(domain:fpl247.com)",
+      "WebFetch(domain:www.premierinjuries.com)",
+      "WebFetch(domain:us.soccerway.com)",
+      "WebFetch(domain:www.chelseafc.com)",
+      "WebFetch(domain:www.foxsports.com)"
     ]
   }
 }

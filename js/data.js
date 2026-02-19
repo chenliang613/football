@@ -1,7 +1,8 @@
 // ============================================================
 // data.js — Premier League 2025/26 Real Data
-// Last updated: GW26 (completed Feb 12, 2026)
-// Sources: Premier League official, BBC Sport, Sky Sports
+// Last updated: GW26 completed + Wolves 2-2 Arsenal Feb 18 (GW27 early fixture)
+// Arsenal/Wolves played 27 games; remaining 18 clubs at GW26
+// Sources: Premier League official, BBC Sport, Sky Sports, ESPN
 // ============================================================
 
 const PL_DATA = {
@@ -37,7 +38,7 @@ const PL_DATA = {
   // recent: cumulative pts in last 5 rounds (GW22–26), newest first, ends with 0
   // ----------------------------------------------------------
   standings: [
-    { teamId:1,  played:26, won:17, drawn:6,  lost:3,  gf:50, ga:18, pts:57, form:["D","W","W","W","W"], recent:[13,12,9,6,3,0] },
+    { teamId:1,  played:27, won:17, drawn:7,  lost:3,  gf:52, ga:20, pts:58, form:["D","D","W","W","W"], recent:[11,10,9,6,3,0] },
     { teamId:2,  played:26, won:16, drawn:5,  lost:5,  gf:54, ga:24, pts:53, form:["W","W","W","W","W"], recent:[15,12,9,6,3,0] },
     { teamId:3,  played:26, won:15, drawn:5,  lost:6,  gf:37, ga:27, pts:50, form:["W","D","W","W","W"], recent:[11,8,7,4,3,0] },
     { teamId:4,  played:26, won:12, drawn:9,  lost:5,  gf:47, ga:37, pts:45, form:["D","W","D","W","W"], recent:[11,10,7,4,3,0] },
@@ -56,7 +57,7 @@ const PL_DATA = {
     { teamId:17, played:26, won:7,  drawn:6,  lost:13, gf:25, ga:38, pts:27, form:["D","L","L","D","W"], recent:[5,4,4,4,3,0]  },
     { teamId:18, played:26, won:6,  drawn:6,  lost:14, gf:32, ga:49, pts:24, form:["D","W","L","L","L"], recent:[7,6,3,3,0,0]  },
     { teamId:19, played:26, won:4,  drawn:6,  lost:16, gf:28, ga:51, pts:18, form:["W","L","L","D","L"], recent:[4,1,1,1,0,0]  },
-    { teamId:20, played:26, won:1,  drawn:6,  lost:19, gf:16, ga:48, pts:9,  form:["D","L","L","D","L"], recent:[3,2,2,1,1,0]  },
+    { teamId:20, played:27, won:1,  drawn:7,  lost:19, gf:18, ga:50, pts:10, form:["D","D","L","L","D"], recent:[3,2,1,0,0,0]  },
   ],
 
   // ----------------------------------------------------------
@@ -491,6 +492,28 @@ const PL_DATA = {
       ]
     },
 
+    // ---- GW27 补赛：Wolves vs Arsenal（Feb 18, 2026，提前踢）----
+    // Arsenal 2-0 领先，Wolves 第78、90+4分钟连追两球，Calafiori 乌龙绝平
+    {
+      id:30, homeId:20, awayId:1, homeScore:2, awayScore:2, date:"2026-02-18",
+      status:"completed", round:27,
+      stats:{
+        homePoss:37, awayPoss:63,
+        homeShots:10, awayShots:19,
+        homeShotsOT:5,  awayShotsOT:6,
+        homeCorners:3,  awayCorners:11,
+        homeFouls:13,   awayFouls:9,
+        homePassAcc:67, awayPassAcc:89,
+        homeYellow:2, awayYellow:1, homeRed:0, awayRed:0,
+      },
+      goals:[
+        { min:28, team:"away", scorer:"Martinelli", assist:"Ødegaard" },
+        { min:54, team:"away", scorer:"Havertz",    assist:"Saka" },
+        { min:78, team:"home", scorer:"Cunha",      assist:"Semedo" },
+        { min:94, team:"home", scorer:"Calafiori",  assist:null },   // 乌龙球
+      ]
+    },
+
     // ---- GW27 upcoming (Feb 21-23, 2026) ----
     { id:20, homeId:2,  awayId:10, homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
     { id:21, homeId:3,  awayId:15, homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
@@ -500,7 +523,7 @@ const PL_DATA = {
     { id:25, homeId:17, awayId:6,  homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
     { id:26, homeId:18, awayId:9,  homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
     { id:27, homeId:11, awayId:12, homeScore:null, awayScore:null, date:"2026-02-22", status:"upcoming", round:27, stats:null, goals:[] },
-    { id:28, homeId:16, awayId:1,  homeScore:null, awayScore:null, date:"2026-02-22", status:"upcoming", round:27, stats:null, goals:[] },
+    { id:28, homeId:16, awayId:1,  homeScore:null, awayScore:null, date:"2026-02-22", status:"upcoming", round:27, stats:null, goals:[] }, // 北伦敦德比！Havertz 缺阵
     { id:29, homeId:8,  awayId:4,  homeScore:null, awayScore:null, date:"2026-02-23", status:"upcoming", round:27, stats:null, goals:[] },
   ],
 
@@ -514,11 +537,11 @@ const PL_DATA = {
     },
     {
       id:2,  name:"Mikel Merino",          teamId:1,  teamName:"Arsenal",       pos:"CM",
-      injury:"Ankle Ligament",     severity:"High",     since:"2026-02-01", returnEst:"2026-03-01", impact:7,  status:"Out"
+      injury:"Foot Fracture (Surgery)", severity:"Critical", since:"2026-02-01", returnEst:"2026-05-01", impact:8,  status:"Long-term"
     },
     {
       id:3,  name:"Kai Havertz",           teamId:1,  teamName:"Arsenal",       pos:"AM",
-      injury:"Muscular",           severity:"Medium",   since:"2026-02-05", returnEst:"2026-02-25", impact:7,  status:"Doubtful"
+      injury:"Muscular (Recurrence)",  severity:"Medium",   since:"2026-02-18", returnEst:"2026-03-08", impact:7,  status:"Out"
     },
     {
       id:4,  name:"Jeremy Doku",           teamId:2,  teamName:"Man City",      pos:"LW",
@@ -538,7 +561,7 @@ const PL_DATA = {
     },
     {
       id:8,  name:"Bruno Guimarães",       teamId:10, teamName:"Newcastle",     pos:"CM",
-      injury:"Ankle Ligament",     severity:"High",     since:"2026-02-08", returnEst:"2026-03-15", impact:9,  status:"Out"
+      injury:"Hamstring (疑似)",    severity:"High",     since:"2026-02-12", returnEst:"2026-03-15", impact:9,  status:"Out"
     },
     {
       id:9,  name:"Boubacar Kamara",       teamId:3,  teamName:"Aston Villa",   pos:"CM",
@@ -556,6 +579,18 @@ const PL_DATA = {
       id:12, name:"Romeo Lavia",           teamId:5,  teamName:"Chelsea",       pos:"CM",
       injury:"Thigh Strain",       severity:"Medium",   since:"2026-02-03", returnEst:"2026-03-05", impact:7,  status:"Out"
     },
+    {
+      id:13, name:"Wataru Endo",           teamId:6,  teamName:"Liverpool",     pos:"CM",
+      injury:"Ankle/Foot",         severity:"High",     since:"2026-02-11", returnEst:"2026-03-15", impact:7,  status:"Out"
+    },
+    {
+      id:14, name:"Marc Cucurella",        teamId:5,  teamName:"Chelsea",       pos:"LB",
+      injury:"Hamstring Strain",   severity:"Medium",   since:"2026-02-14", returnEst:"2026-03-07", impact:6,  status:"Out"
+    },
+    {
+      id:15, name:"Lucas Bergvall",        teamId:16, teamName:"Tottenham",     pos:"CM",
+      injury:"Ankle Surgery",      severity:"High",     since:"2026-01-15", returnEst:"2026-03-01", impact:7,  status:"Out"
+    },
   ],
 
   // ----------------------------------------------------------
@@ -563,7 +598,7 @@ const PL_DATA = {
   // Used for predictions & injuries tabs
   // ----------------------------------------------------------
   teamForm: {
-    1:  { name:"Arsenal",       scores:[7.5, 9.0, 9.2, 9.0, 7.5], avg:8.4 },
+    1:  { name:"Arsenal",       scores:[9.2, 9.0, 9.0, 7.5, 6.5], avg:8.2 },
     2:  { name:"Man City",      scores:[9.0, 9.5, 9.0, 8.5, 9.5], avg:9.1 },
     3:  { name:"Aston Villa",   scores:[9.0, 7.5, 8.5, 9.0, 8.0], avg:8.4 },
     4:  { name:"Man Utd",       scores:[7.5, 8.0, 7.5, 8.5, 7.5], avg:7.8 },
