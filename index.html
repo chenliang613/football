@@ -313,11 +313,79 @@
     </div>
 
     <!-- Match predictions -->
-    <div class="grid-2 mb-20" id="predictions-grid">
+    <div class="grid-2 mb-4" id="predictions-grid">
       <!-- Rendered by predictions.js -->
     </div>
 
-    <div class="grid-2 gap-16">
+    <!-- ── 交互式深度分析面板（点击预测卡片展开）── -->
+    <div id="prediction-detail" class="prediction-detail">
+
+      <!-- 标题行 -->
+      <div class="pred-header">
+        <div>
+          <div class="section-title" id="pred-detail-title"></div>
+          <div id="pred-detail-meta" style="font-size:12px;color:var(--text-muted);margin-top:4px"></div>
+        </div>
+        <button id="pred-detail-close" class="pred-close-btn">✕</button>
+      </div>
+
+      <!-- ① 概率 + 比分分布 -->
+      <div class="grid-2 gap-16 mb-16">
+        <div>
+          <div class="card-title">🎯 胜负概率</div>
+          <div id="pred-prob-display"></div>
+          <!-- 交互式预测参数 -->
+          <div id="pred-sliders" style="margin-top:16px"></div>
+        </div>
+        <div>
+          <div class="card-title">⚽ 最可能比分（泊松分布）</div>
+          <div id="pred-score-probs"></div>
+        </div>
+      </div>
+
+      <!-- ② 球队对比 + 雷达 + 近期状态 -->
+      <div class="grid-3 gap-16 mb-16">
+        <div>
+          <div class="card-title">📊 实力横向对比</div>
+          <div id="pred-team-compare"></div>
+        </div>
+        <div>
+          <div class="card-title">🕸 综合实力雷达</div>
+          <div class="chart-container chart-sm">
+            <canvas id="chart-pred-radar"></canvas>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">🔥 近5场状态</div>
+          <div id="pred-form-strips"></div>
+        </div>
+      </div>
+
+      <!-- ③ H2H + 关键球员 + 伤情 -->
+      <div class="grid-3 gap-16 mb-16">
+        <div>
+          <div class="card-title">⚔️ 历史交锋</div>
+          <div id="pred-h2h"></div>
+        </div>
+        <div>
+          <div class="card-title">⭐ 关键球员</div>
+          <div id="pred-key-players"></div>
+        </div>
+        <div>
+          <div class="card-title">🏥 伤情影响</div>
+          <div id="pred-injuries"></div>
+        </div>
+      </div>
+
+      <!-- ④ AI 分析文字 -->
+      <div>
+        <div class="card-title">🧠 赛前深度分析</div>
+        <div id="pred-analysis-text" class="pred-analysis-text"></div>
+      </div>
+
+    </div><!-- /prediction-detail -->
+
+    <div class="grid-2 gap-16 mt-20">
       <!-- Championship Probability -->
       <div class="card">
         <div class="card-title">🏆 夺冠概率预测</div>

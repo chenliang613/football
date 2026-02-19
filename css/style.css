@@ -1441,3 +1441,208 @@ select.filter-select:focus { border-color: var(--accent); }
   .ratings-grid { grid-template-columns: 1fr 1fr; }
   .detail-hero  { padding: 10px 12px; }
 }
+
+/* ============================================================
+   交互式预测分析面板
+   ============================================================ */
+
+/* 预测卡片升级 */
+.pred-badge {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #fff; margin: 0 auto 6px;
+}
+.pred-card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.prediction-card {
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.prediction-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.pred-selected {
+  border: 2px solid var(--accent) !important;
+  box-shadow: 0 0 20px rgba(233,0,82,0.25) !important;
+}
+.prob-bars.mt-12 { margin-top: 12px; }
+.prob-labels.mt-6 { margin-top: 6px; }
+
+/* 深度分析面板容器 */
+.prediction-detail {
+  display: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin: 0 0 24px;
+  animation: panel-appear 0.3s ease;
+}
+.prediction-detail.visible { display: block; }
+
+.pred-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.pred-close-btn {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 20px; cursor: pointer; padding: 4px 8px;
+  border-radius: 4px; transition: color 0.2s;
+}
+.pred-close-btn:hover { color: var(--text-primary); }
+
+/* 概率大字展示 */
+.pred-prob-numbers {
+  display: flex; justify-content: space-around;
+  margin-bottom: 14px;
+}
+.pred-prob-item { text-align: center; }
+.pred-prob-pct  { font-size: 28px; font-weight: 900; line-height: 1; }
+.pred-prob-lbl  { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+.pred-prob-bar-wrap {
+  display: flex; height: 12px; border-radius: 6px; overflow: hidden;
+  background: var(--bg-secondary);
+}
+.pred-prob-seg { height: 100%; transition: width 0.5s ease; }
+
+/* 交互滑块 */
+.pred-sliders-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.pred-slider-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.pred-slider-label {
+  font-size: 11px; color: var(--text-secondary);
+  width: 72px; flex-shrink: 0;
+}
+.pred-slider {
+  flex: 1; height: 4px; accent-color: var(--accent);
+  cursor: pointer;
+}
+.pred-slider-val {
+  font-size: 11px; font-weight: 700; color: var(--accent);
+  width: 24px; text-align: right;
+}
+.pred-reset-btn {
+  margin-top: 4px; width: 100%; padding: 6px 0;
+  background: rgba(233,0,82,0.1); border: 1px solid rgba(233,0,82,0.3);
+  border-radius: 6px; color: var(--accent); font-size: 11px;
+  font-weight: 700; cursor: pointer; transition: background 0.2s;
+}
+.pred-reset-btn:hover { background: rgba(233,0,82,0.2); }
+
+/* 泊松比分表 */
+.score-dist-grid { display: flex; flex-direction: column; gap: 5px; }
+.score-dist-row {
+  display: grid;
+  grid-template-columns: 48px 1fr 36px;
+  align-items: center; gap: 8px;
+  padding: 4px 8px; border-radius: 6px;
+  background: rgba(255,255,255,0.03);
+  transition: background 0.2s;
+}
+.score-dist-row:hover   { background: rgba(255,255,255,0.07); }
+.score-top1 { background: rgba(233,0,82,0.12) !important; border: 1px solid rgba(233,0,82,0.3); }
+.score-top3 { background: rgba(255,255,255,0.05) !important; }
+.score-dist-score { font-size: 14px; font-weight: 800; text-align: center; }
+.score-dist-bar-wrap { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.score-dist-bar { height: 100%; border-radius: 3px; transition: width 0.4s; }
+.score-dist-pct { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-align: right; }
+
+/* 球队实力对比条 */
+.cmp-row {
+  display: grid;
+  grid-template-columns: 36px 1fr 36px 64px;
+  gap: 6px; align-items: center;
+  margin-bottom: 8px; font-size: 12px; font-weight: 700;
+}
+.cmp-bars {
+  height: 6px; display: flex;
+  background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden;
+}
+.cmp-val   { text-align: center; }
+.cmp-label { font-size: 10px; font-weight: 400; color: var(--text-muted); }
+
+/* 近期状态条 */
+.form-strip-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.form-strip-team { font-size: 12px; font-weight: 800; width: 36px; flex-shrink: 0; }
+
+/* H2H */
+.h2h-total { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+.h2h-bar-wrap {
+  display: flex; height: 10px; border-radius: 5px; overflow: hidden;
+  background: var(--bg-secondary); margin-bottom: 6px;
+}
+.h2h-bar-wrap > div { height: 100%; transition: width 0.5s; }
+.h2h-labels {
+  display: flex; justify-content: space-between;
+  font-size: 11px; font-weight: 700; margin-bottom: 12px;
+}
+.h2h-goals {
+  display: flex; justify-content: space-around; align-items: center;
+  background: rgba(255,255,255,0.03); border-radius: 8px; padding: 10px;
+}
+.h2h-goal-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+
+/* 关键球员 */
+.kp-section { }
+.kp-card {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.kp-card:last-child { border-bottom: none; }
+.kp-badge {
+  width: 32px; height: 32px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; color: #fff;
+}
+.kp-name  { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+.kp-stats { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+
+/* 伤情 mini */
+.inj-mini {
+  display: flex; gap: 8px; align-items: flex-start;
+  padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.inj-mini:last-child { border-bottom: none; }
+.inj-badge {
+  font-size: 9px; font-weight: 700; padding: 2px 5px;
+  border-radius: 4px; flex-shrink: 0; margin-top: 2px; white-space: nowrap;
+}
+.inj-critical { background: rgba(233,0,82,0.2);  color: var(--accent); }
+.inj-out      { background: rgba(255,87,34,0.2);  color: #ff5722; }
+.inj-doubt    { background: rgba(255,214,0,0.15); color: var(--yellow); }
+
+/* AI 分析文字 */
+.pred-analysis-text { margin-top: 8px; }
+.analysis-para {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.8;
+  margin-bottom: 12px; padding: 12px 16px;
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid rgba(255,255,255,0.1);
+}
+.analysis-para:last-child { margin-bottom: 0; }
+.analysis-para strong { color: var(--text-primary); }
+
+/* 响应式 */
+@media (max-width: 900px) {
+  .pred-prob-pct { font-size: 22px; }
+}
+@media (max-width: 600px) {
+  .pred-prob-pct { font-size: 18px; }
+  .cmp-row { grid-template-columns: 30px 1fr 30px 52px; }
+}

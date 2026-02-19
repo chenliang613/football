@@ -608,6 +608,16 @@ const PL_DATA = {
     8:  { name:"Everton",       scores:[6.0, 7.5, 7.0, 7.5, 6.5], avg:7.1 },
     9:  { name:"Bournemouth",   scores:[7.5, 7.0, 7.5, 7.0, 7.5], avg:7.3 },
     10: { name:"Newcastle",     scores:[7.5, 6.0, 7.0, 6.0, 7.5], avg:6.8 },
+    11: { name:"Sunderland",    scores:[4.5, 4.5, 6.0, 6.0, 7.0], avg:5.6 },
+    12: { name:"Fulham",        scores:[4.5, 4.5, 7.5, 5.0, 6.0], avg:5.5 },
+    13: { name:"Crystal Palace",scores:[5.0, 7.5, 6.5, 6.5, 7.5], avg:6.6 },
+    14: { name:"Brighton",      scores:[5.0, 6.5, 6.5, 7.0, 6.5], avg:6.3 },
+    15: { name:"Leeds United",  scores:[6.5, 7.5, 5.0, 6.5, 7.5], avg:6.6 },
+    16: { name:"Tottenham",     scores:[4.5, 4.5, 7.5, 6.5, 5.0], avg:5.6 },
+    17: { name:"Nottm Forest",  scores:[6.0, 5.0, 5.0, 6.5, 7.5], avg:6.0 },
+    18: { name:"West Ham",      scores:[6.0, 7.5, 5.0, 5.0, 4.5], avg:5.6 },
+    19: { name:"Burnley",       scores:[7.5, 4.5, 4.5, 6.0, 4.5], avg:5.4 },
+    20: { name:"Wolves",        scores:[6.0, 6.0, 4.5, 4.5, 6.0], avg:5.4 },
   },
 
   // ----------------------------------------------------------
@@ -621,6 +631,9 @@ const PL_DATA = {
     "5-19":  { homeWins:10, draws:3, awayWins:2, homeGoals:32, awayGoals:12 }, // Chelsea vs Burnley
     "7-14":  { homeWins:5, draws:4, awayWins:4, homeGoals:16, awayGoals:14 }, // Brentford vs Brighton
     "18-9":  { homeWins:6, draws:4, awayWins:5, homeGoals:19, awayGoals:17 }, // West Ham vs Bournemouth
+    "3-15":  { homeWins:5, draws:2, awayWins:2, homeGoals:16, awayGoals:8  }, // Aston Villa vs Leeds
+    "13-20": { homeWins:4, draws:4, awayWins:4, homeGoals:14, awayGoals:13 }, // Crystal Palace vs Wolves
+    "11-12": { homeWins:3, draws:3, awayWins:4, homeGoals:11, awayGoals:14 }, // Sunderland vs Fulham
   },
 
   // ----------------------------------------------------------
