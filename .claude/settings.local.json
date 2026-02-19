@@ -30,7 +30,8 @@
       "Bash(/Users/apple/football/football/css/style.css:*)",
       "WebFetch(domain:www.givemesport.com)",
       "WebFetch(domain:www.sofascore.com)",
-      "WebFetch(domain:www.fotmob.com)"
+      "WebFetch(domain:www.fotmob.com)",
+      "Bash(wc:*)"
     ]
   }
 }
