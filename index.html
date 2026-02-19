@@ -393,6 +393,61 @@
 </div><!-- /main-content -->
 
 <!-- ============================================================
+     实时数据更新面板（右下角浮动）
+     ============================================================ -->
+<div id="live-panel" class="live-panel collapsed">
+
+  <!-- 悬浮触发按钮 -->
+  <button id="live-toggle-btn" class="live-toggle-btn" title="实时数据控制">
+    <span class="live-toggle-icon">📡</span>
+    <span id="live-toggle-dot" class="live-toggle-dot"></span>
+  </button>
+
+  <!-- 展开面板 -->
+  <div class="live-panel-body">
+
+    <div class="live-panel-head">
+      <span class="live-panel-title">📡 实时数据</span>
+      <button id="live-panel-close" class="live-panel-close" title="关闭">✕</button>
+    </div>
+
+    <!-- 当前状态 -->
+    <div class="live-status-row">
+      <span id="panel-status-dot" class="panel-dot offline">●</span>
+      <span id="panel-status-text" class="panel-status-text">离线模式</span>
+    </div>
+
+    <!-- 上次更新时间 -->
+    <div class="live-time-row">
+      <span class="live-time-label">上次更新</span>
+      <span id="panel-update-time" class="live-time-val">—</span>
+    </div>
+
+    <!-- 立即更新按钮 -->
+    <button id="panel-refresh-btn" class="panel-refresh-btn">
+      <span id="panel-refresh-icon" class="panel-refresh-icon">⟳</span>
+      立即更新
+    </button>
+
+    <!-- API Key 提示（未配置时显示） -->
+    <div id="panel-api-hint" class="panel-api-hint" style="display:none">
+      ⚙️ 在 <code>js/config.js</code> 中填入<br>API Key 后可启用实时模式
+    </div>
+
+    <!-- 自动刷新开关 -->
+    <div class="live-auto-row">
+      <label class="live-auto-label">
+        <input type="checkbox" id="panel-auto-toggle" checked>
+        <span class="live-auto-track"></span>
+        <span class="live-auto-text">自动刷新</span>
+      </label>
+      <span id="panel-interval-text" class="live-interval-text">每5分钟</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
      SCRIPTS (order matters: data first, then modules, then app)
      ============================================================ -->
 <script src="js/config.js"></script>

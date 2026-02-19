@@ -1067,3 +1067,229 @@ select.filter-select:focus { border-color: var(--accent); }
   .tab-btn { padding: 6px 10px; font-size: 12px; }
   .brand-sub { display: none; }
 }
+
+/* ============================================================
+   实时数据更新浮动面板
+   ============================================================ */
+
+/* 容器：固定右下角，竖向弹出 */
+.live-panel {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* ---- 悬浮触发按钮 ---- */
+.live-toggle-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pl-purple) 0%, #2a0030 100%);
+  border: 2px solid var(--accent);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(233,0,82,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.live-toggle-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(233,0,82,0.6);
+}
+
+/* 状态小圆点（浮在按钮右上角） */
+.live-toggle-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-primary);
+  background: var(--text-muted);
+  transition: background 0.3s;
+}
+.live-toggle-dot.ready   { background: var(--green); }
+.live-toggle-dot.loading { background: var(--yellow); animation: status-pulse 1.4s infinite; }
+.live-toggle-dot.error   { background: var(--red); }
+.live-toggle-dot.offline { background: var(--text-muted); }
+
+/* ---- 展开面板主体 ---- */
+.live-panel-body {
+  width: 240px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transform-origin: bottom right;
+  animation: panel-appear 0.18s ease;
+}
+.live-panel.collapsed .live-panel-body { display: none; }
+
+@keyframes panel-appear {
+  from { opacity: 0; transform: scale(0.92) translateY(10px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+/* 面板头部 */
+.live-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.live-panel-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.live-panel-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.live-panel-close:hover { color: var(--text-primary); }
+
+/* 状态行 */
+.live-status-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.panel-dot {
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.panel-dot.ready   { color: var(--green); }
+.panel-dot.loading { color: var(--yellow); animation: status-pulse 1.4s infinite; }
+.panel-dot.error   { color: var(--red); }
+.panel-dot.offline { color: var(--text-muted); }
+
+.panel-status-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* 时间行 */
+.live-time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+.live-time-label { color: var(--text-muted); }
+.live-time-val   { color: var(--text-secondary); font-weight: 600; }
+
+/* 立即更新按钮 */
+.panel-refresh-btn {
+  width: 100%;
+  padding: 9px 0;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.panel-refresh-btn:hover:not(:disabled) { opacity: 0.85; }
+.panel-refresh-btn:active:not(:disabled) { transform: scale(0.97); }
+.panel-refresh-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* 旋转动画（更新中） */
+.panel-refresh-icon {
+  display: inline-block;
+  font-size: 16px;
+  transition: none;
+}
+.panel-refresh-btn.loading .panel-refresh-icon {
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* API Key 提示 */
+.panel-api-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  line-height: 1.6;
+}
+.panel-api-hint code {
+  color: var(--accent);
+  font-size: 10px;
+}
+
+/* 自动刷新开关行 */
+.live-auto-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.live-auto-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+.live-auto-label input { display: none; }
+
+.live-auto-track {
+  width: 30px;
+  height: 17px;
+  border-radius: 9px;
+  background: var(--bg-secondary);
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.live-auto-track::after {
+  content: '';
+  position: absolute;
+  top: 2.5px;
+  left: 2.5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform 0.2s, background 0.2s;
+}
+.live-auto-label input:checked ~ .live-auto-track { background: rgba(233,0,82,0.35); }
+.live-auto-label input:checked ~ .live-auto-track::after {
+  transform: translateX(13px);
+  background: var(--accent);
+}
+.live-auto-text   { font-size: 11px; color: var(--text-secondary); }
+.live-interval-text { font-size: 11px; color: var(--text-muted); }
