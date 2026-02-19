@@ -17,7 +17,8 @@
       "WebFetch(domain:www.topscorersfootball.com)",
       "WebFetch(domain:fbref.com)",
       "WebFetch(domain:globalsportsarchive.com)",
-      "WebFetch(domain:ooscore.com)"
+      "WebFetch(domain:ooscore.com)",
+      "Bash(brew upgrade:*)"
     ]
   }
 }

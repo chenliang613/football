@@ -369,5 +369,11 @@ const PlayersModule = (() => {
     initFilters();
   }
 
-  return { init, selectPlayer };
+  function refresh() {
+    renderScorers();
+    renderCards();
+    if (selectedA) renderDetailPanel();
+  }
+
+  return { init, selectPlayer, refresh };
 })();

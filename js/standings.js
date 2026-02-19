@@ -239,5 +239,12 @@ const StandingsModule = (() => {
     renderGoalsChart();
   }
 
-  return { init };
+  function refresh() {
+    renderKPI();
+    renderTable();
+    renderTrendChart();
+    renderGoalsChart();
+  }
+
+  return { init, refresh };
 })();

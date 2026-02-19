@@ -299,5 +299,14 @@ const InjuriesModule = (() => {
     renderImpactAnalysis();
   }
 
-  return { init };
+  function refresh() {
+    renderKPI();
+    renderTable();
+    renderFormChart();
+    renderSeverityChart();
+    renderFormRadar();
+    renderImpactAnalysis();
+  }
+
+  return { init, refresh };
 })();

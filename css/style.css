@@ -991,6 +991,76 @@ select.filter-select:focus { border-color: var(--accent); }
   .main-content { padding: 16px; }
 }
 
+/* ---- 数据状态指示器 ---- */
+.data-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: background 0.4s, border-color 0.4s, color 0.4s;
+  flex-shrink: 0;
+}
+
+.status-dot {
+  font-size: 9px;
+  line-height: 1;
+}
+
+.status-loading {
+  color: var(--yellow);
+  border-color: rgba(255,214,0,0.3);
+  background: rgba(255,214,0,0.08);
+  animation: status-pulse 1.4s ease-in-out infinite;
+}
+.status-ready {
+  color: var(--green);
+  border-color: rgba(0,230,118,0.3);
+  background: rgba(0,230,118,0.08);
+}
+.status-error {
+  color: var(--red);
+  border-color: rgba(255,23,68,0.3);
+  background: rgba(255,23,68,0.08);
+}
+.status-offline {
+  color: var(--text-muted);
+  border-color: rgba(96,104,128,0.3);
+  background: rgba(96,104,128,0.08);
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+/* 手动刷新按钮 */
+.refresh-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 15px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  line-height: 1;
+  transition: color 0.2s, transform 0.35s;
+  flex-shrink: 0;
+}
+.refresh-btn:hover {
+  color: var(--text-primary);
+  transform: rotate(180deg);
+}
+.refresh-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
+}
+
 @media (max-width: 600px) {
   .grid-3, .grid-4 { grid-template-columns: 1fr; }
   .navbar-inner { padding: 0 12px; }

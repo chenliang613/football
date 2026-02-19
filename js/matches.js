@@ -385,5 +385,13 @@ const MatchesModule = (() => {
     initFilters();
   }
 
-  return { init, selectMatch };
+  function refresh() {
+    renderMatches(currentFilter);
+    // 数据更新后关闭详情面板，避免显示过期数据
+    document.getElementById('match-detail').classList.remove('visible');
+    document.querySelectorAll('.match-card').forEach(c => c.classList.remove('selected'));
+    selectedMatch = null;
+  }
+
+  return { init, selectMatch, refresh };
 })();

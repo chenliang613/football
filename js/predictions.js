@@ -268,5 +268,11 @@ const PredictionsModule = (() => {
     renderRelegation();
   }
 
-  return { init };
+  function refresh() {
+    renderPredictions();
+    renderChampionship();
+    renderRelegation();
+  }
+
+  return { init, refresh };
 })();
