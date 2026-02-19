@@ -4,11 +4,12 @@
 
 const MatchesModule = (() => {
 
-  let radarChart    = null;
-  let timelineChart = null;
-  let possChart     = null;
-  let currentFilter = 'all';
-  let selectedMatch = null;
+  let radarChart      = null;
+  let timelineChart   = null;
+  let possChart       = null;
+  let momentumChart   = null;
+  let currentFilter   = 'all';
+  let selectedMatch   = null;
 
   // -------------------------------------------------------
   // Helpers
@@ -99,11 +100,135 @@ const MatchesModule = (() => {
     document.getElementById('detail-date').textContent =
       `第${m.round}轮 · ${m.date}`;
 
+    renderNarrative(m);
+    renderHero(m);
     renderStatsBars(m);
-    renderGoalsTimeline(m);
+    renderMatchEvents(m);
     renderRadarChart(m);
     renderPossessionChart(m);
     renderGoalsTimelineChart(m);
+    renderMomentumChart(m);
+    renderPlayerRatings(m);
+  }
+
+  // -------------------------------------------------------
+  // ① 赛后叙述
+  // -------------------------------------------------------
+  function renderNarrative(m) {
+    const el = document.getElementById('detail-narrative');
+    if (!el) return;
+    const analysis = (typeof MATCH_ANALYSIS !== 'undefined') ? MATCH_ANALYSIS[m.id] : null;
+    if (analysis?.narrative) {
+      el.textContent = analysis.narrative;
+      el.style.display = 'block';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  // -------------------------------------------------------
+  // ② xG 英雄栏
+  // -------------------------------------------------------
+  function renderHero(m) {
+    const el = document.getElementById('detail-hero');
+    if (!el) return;
+    const analysis = (typeof MATCH_ANALYSIS !== 'undefined') ? MATCH_ANALYSIS[m.id] : null;
+    if (!analysis) { el.style.display = 'none'; return; }
+    el.style.display = '';
+
+    const xg  = analysis.xg  || { home: 0, away: 0 };
+    const bc  = analysis.bigChances || { home: '-', away: '-' };
+    const off = analysis.offsides   || { home: '-', away: '-' };
+    const tac = analysis.tackles    || { home: '-', away: '-' };
+    const hColor = teamColor(m.homeId);
+    const aColor = teamColor(m.awayId);
+    const totalXG = xg.home + xg.away || 1;
+    const homeXGPct = (xg.home / totalXG * 100).toFixed(1);
+    const awayXGPct = (xg.away / totalXG * 100).toFixed(1);
+
+    el.innerHTML = `
+      <div class="hero-xg-block">
+        <div class="hero-xg-row">
+          <span class="hero-xg-val" style="color:${hColor}">${xg.home.toFixed(2)}</span>
+          <span class="hero-xg-label">预期进球 xG</span>
+          <span class="hero-xg-val" style="color:${aColor}">${xg.away.toFixed(2)}</span>
+        </div>
+        <div class="hero-xg-bar">
+          <div style="width:${homeXGPct}%;background:${hColor}"></div>
+          <div style="width:${awayXGPct}%;background:${aColor}"></div>
+        </div>
+      </div>
+      <div class="hero-qs-row">
+        <div class="hero-qs-cell">
+          <span style="color:${hColor}">${bc.home}</span>
+          <span class="hero-qs-label">大好机会</span>
+          <span style="color:${aColor}">${bc.away}</span>
+        </div>
+        <div class="hero-qs-cell">
+          <span style="color:${hColor}">${off.home}</span>
+          <span class="hero-qs-label">越位</span>
+          <span style="color:${aColor}">${off.away}</span>
+        </div>
+        <div class="hero-qs-cell">
+          <span style="color:${hColor}">${tac.home}</span>
+          <span class="hero-qs-label">铲球</span>
+          <span style="color:${aColor}">${tac.away}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // -------------------------------------------------------
+  // ③ 比赛事件时间线（进球 + 黄牌 + 换人）
+  // -------------------------------------------------------
+  function renderMatchEvents(m) {
+    const el = document.getElementById('detail-events');
+    if (!el) return;
+    const analysis = (typeof MATCH_ANALYSIS !== 'undefined') ? MATCH_ANALYSIS[m.id] : null;
+
+    const hColor = teamColor(m.homeId);
+    const aColor = teamColor(m.awayId);
+
+    // 合并进球与非进球事件，按分钟排序
+    const goals  = m.goals.map(g => ({ ...g, _type: 'goal' }));
+    const events = (analysis?.events || []).map(e => ({ ...e, _type: e.type }));
+    const all    = [...goals, ...events].sort((a, b) => a.min - b.min);
+
+    if (!all.length) {
+      el.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:8px 0">暂无事件数据</div>';
+      return;
+    }
+
+    el.innerHTML = all.map(e => {
+      const isHome  = e.team === 'home';
+      const color   = isHome ? hColor : aColor;
+      let icon, desc;
+
+      if (e._type === 'goal') {
+        icon = '⚽';
+        desc = e.scorer + (e.assist ? ` <span style="color:var(--text-muted);font-size:10px">(${e.assist})</span>` : '');
+      } else if (e._type === 'yellow') {
+        icon = '🟨';
+        desc = e.player;
+      } else if (e._type === 'red') {
+        icon = '🟥';
+        desc = e.player;
+      } else if (e._type === 'sub') {
+        icon = '🔄';
+        desc = `<span style="color:#4ade80">↑${e.playerOn}</span> <span style="color:var(--text-muted)">↓${e.playerOff}</span>`;
+      } else {
+        return '';
+      }
+
+      const homeCell = isHome
+        ? `<div class="ev-side ev-home"><span class="ev-desc" style="color:${color}">${desc}</span><span class="ev-icon">${icon}</span></div>`
+        : `<div class="ev-side ev-home"></div>`;
+      const awayCell = !isHome
+        ? `<div class="ev-side ev-away"><span class="ev-icon">${icon}</span><span class="ev-desc" style="color:${color}">${desc}</span></div>`
+        : `<div class="ev-side ev-away"></div>`;
+
+      return `<div class="ev-row">${homeCell}<div class="ev-min">${e.min}'</div>${awayCell}</div>`;
+    }).join('');
   }
 
   // -------------------------------------------------------
@@ -354,6 +479,105 @@ const MatchesModule = (() => {
   }
 
   // -------------------------------------------------------
+  // Momentum Chart
+  // -------------------------------------------------------
+  function renderMomentumChart(m) {
+    const ctx = document.getElementById('chart-momentum');
+    if (!ctx) return;
+    if (momentumChart) { momentumChart.destroy(); momentumChart = null; }
+
+    const analysis = (typeof MATCH_ANALYSIS !== 'undefined') ? MATCH_ANALYSIS[m.id] : null;
+    if (!analysis?.momentum) return;
+
+    const labels   = ['1-15', '16-30', '31-45', '46-60', '61-75', '76-90'];
+    const homeData = analysis.momentum;
+    const awayData = homeData.map(v => 100 - v);
+    const hColor   = teamColor(m.homeId);
+    const aColor   = teamColor(m.awayId);
+
+    momentumChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: teamShort(m.homeId),
+            data: homeData,
+            borderColor: hColor,
+            backgroundColor: hColor + '22',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 3,
+          },
+          {
+            label: teamShort(m.awayId),
+            data: awayData,
+            borderColor: aColor,
+            backgroundColor: aColor + '22',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 3,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#a0a8c0', font: { size: 11 } } },
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255,255,255,0.06)' },
+            ticks: { color: '#606880', font: { size: 10 } },
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.06)' },
+            ticks: { color: '#606880', font: { size: 10 } },
+            min: 0, max: 100,
+          },
+        },
+      },
+    });
+  }
+
+  // -------------------------------------------------------
+  // Player Ratings
+  // -------------------------------------------------------
+  function renderPlayerRatings(m) {
+    const el = document.getElementById('detail-ratings');
+    if (!el) return;
+    const analysis = (typeof MATCH_ANALYSIS !== 'undefined') ? MATCH_ANALYSIS[m.id] : null;
+    if (!analysis?.ratings?.length) {
+      el.innerHTML = '<div style="color:var(--text-muted);font-size:12px">暂无评分数据</div>';
+      return;
+    }
+
+    const hColor = teamColor(m.homeId);
+    const aColor = teamColor(m.awayId);
+
+    el.innerHTML = analysis.ratings.map(r => {
+      const isHome  = r.team === 'home';
+      const color   = isHome ? hColor : aColor;
+      const tShort  = isHome ? teamShort(m.homeId) : teamShort(m.awayId);
+      const cls     = r.rating >= 9 ? 'rating-ex' : r.rating >= 8 ? 'rating-good' : r.rating >= 6 ? 'rating-ok' : 'rating-low';
+
+      return `
+        <div class="rating-card">
+          <div class="rating-badge ${cls}">${r.rating.toFixed(1)}</div>
+          <div class="rating-info">
+            <div class="rating-name">${r.player}</div>
+            <div class="rating-team" style="color:${color}">${tShort}</div>
+            ${r.highlight ? `<div class="rating-hl">${r.highlight}</div>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // -------------------------------------------------------
   // Close detail
   // -------------------------------------------------------
   function closeDetail() {
@@ -387,9 +611,9 @@ const MatchesModule = (() => {
 
   function refresh() {
     renderMatches(currentFilter);
-    // 数据更新后关闭详情面板，避免显示过期数据
     document.getElementById('match-detail').classList.remove('visible');
     document.querySelectorAll('.match-card').forEach(c => c.classList.remove('selected'));
+    if (momentumChart) { momentumChart.destroy(); momentumChart = null; }
     selectedMatch = null;
   }
 

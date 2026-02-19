@@ -146,8 +146,10 @@
       <!-- Rendered by matches.js -->
     </div>
 
-    <!-- Match Detail Panel -->
+    <!-- Match Detail Panel — 深度分析 -->
     <div class="match-detail" id="match-detail">
+
+      <!-- ① 标题行 -->
       <div class="match-detail-header">
         <div>
           <div class="section-title" id="detail-title">比赛详情</div>
@@ -156,42 +158,58 @@
         <button id="detail-close" style="background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer">✕</button>
       </div>
 
-      <div class="grid-2 gap-16" style="margin-bottom:20px">
-        <!-- Stats bars -->
-        <div>
-          <div class="card-title">📊 比赛数据对比</div>
-          <div id="detail-stats-bars">
-            <!-- Rendered dynamically -->
-          </div>
-        </div>
+      <!-- ② 赛后叙述 -->
+      <div id="detail-narrative" class="detail-narrative"></div>
 
-        <!-- Radar chart -->
+      <!-- ③ xG + 关键数据英雄栏 -->
+      <div id="detail-hero" class="detail-hero"></div>
+
+      <!-- ④ 主数据区：数据对比 | 比赛事件 | 雷达图 -->
+      <div class="grid-3 gap-16 mb-16">
         <div>
-          <div class="card-title">🕸 雷达图对比</div>
+          <div class="card-title">📊 数据对比</div>
+          <div id="detail-stats-bars"></div>
+        </div>
+        <div>
+          <div class="card-title">📋 比赛事件</div>
+          <div id="detail-events" class="detail-events"></div>
+        </div>
+        <div>
+          <div class="card-title">🕸 雷达图</div>
           <div class="chart-container chart-sm">
             <canvas id="chart-match-radar"></canvas>
           </div>
         </div>
       </div>
 
-      <div class="grid-2 gap-16">
-        <!-- Goals timeline -->
-        <div>
-          <div class="card-title">⚽ 进球时间线</div>
-          <div id="detail-goals-timeline"></div>
-          <div class="chart-container chart-sm mt-16">
-            <canvas id="chart-goals-timeline"></canvas>
-          </div>
-        </div>
-
-        <!-- Possession donut -->
+      <!-- ⑤ 图表区：控球率 | 进球分布 | 比赛走势 -->
+      <div class="grid-3 gap-16 mb-16">
         <div>
           <div class="card-title">🔵 控球率</div>
           <div class="chart-container chart-sm">
             <canvas id="chart-possession"></canvas>
           </div>
         </div>
+        <div>
+          <div class="card-title">⚽ 进球时间分布</div>
+          <div class="chart-container chart-sm">
+            <canvas id="chart-goals-timeline"></canvas>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">📈 比赛走势</div>
+          <div class="chart-container chart-sm">
+            <canvas id="chart-momentum"></canvas>
+          </div>
+        </div>
       </div>
+
+      <!-- ⑥ 球员评分 -->
+      <div>
+        <div class="card-title">⭐ 球员评分</div>
+        <div id="detail-ratings" class="ratings-grid"></div>
+      </div>
+
     </div>
 
   </div><!-- /tab-matches -->
@@ -452,6 +470,7 @@
      ============================================================ -->
 <script src="js/config.js"></script>
 <script src="js/data.js"></script>
+<script src="js/analysis.js"></script>
 <script src="js/api.js"></script>
 <script src="js/dataService.js"></script>
 <script src="js/standings.js"></script>

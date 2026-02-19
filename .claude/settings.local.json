@@ -26,7 +26,8 @@
       "WebFetch(domain:www.premierinjuries.com)",
       "WebFetch(domain:us.soccerway.com)",
       "WebFetch(domain:www.chelseafc.com)",
-      "WebFetch(domain:www.foxsports.com)"
+      "WebFetch(domain:www.foxsports.com)",
+      "Bash(/Users/apple/football/football/css/style.css:*)"
     ]
   }
 }

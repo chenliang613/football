@@ -10,7 +10,7 @@ const API = (() => {
   // 通用 fetch 封装
   // -------------------------------------------------------
   async function request(path, params = {}) {
-    const url = new URL(CONFIG.API_BASE + path);
+    const url = new URL(CONFIG.DATA_URL + path);
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
 
     const resp = await fetch(url.toString(), {
