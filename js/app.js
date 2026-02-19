@@ -100,7 +100,7 @@
 
     // 导航栏状态
     if (navRefreshBtn) {
-      navRefreshBtn.disabled = state === 'loading';
+      navRefreshBtn.disabled = state === 'loading' || state === 'offline';
     }
   }
 
@@ -267,9 +267,18 @@
           break;
         }
 
-        case 'error':
+        case 'error': {
           console.warn('[App] DataService error:', payload);
+          // 根据 HTTP 状态码细化导航栏提示
+          let errMsg = 'API 错误 · 使用静态数据';
+          if (payload && typeof payload === 'object') {
+            const code = payload.httpStatus;
+            if (code === 401 || code === 403) errMsg = 'API Key 无效 · 请检查 config.js';
+            else if (code === 429)            errMsg = 'API 请求过于频繁 · 稍后重试';
+          }
+          setNavStatus('error', errMsg);
           break;
+        }
       }
     });
   }

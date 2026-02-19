@@ -19,7 +19,9 @@ const API = (() => {
 
     if (!resp.ok) {
       const body = await resp.json().catch(() => ({}));
-      throw new Error(body.message || `HTTP ${resp.status} — ${path}`);
+      const err  = new Error(body.message || `HTTP ${resp.status} — ${path}`);
+      err.httpStatus = resp.status;
+      throw err;
     }
 
     return resp.json();

@@ -290,7 +290,7 @@ const DataService = (() => {
       console.error('[DataService]', err);
       _status = 'error';
       notify('status', 'error');
-      notify('error', err.message);
+      notify('error', err);   // 传递完整 Error 对象，含 httpStatus
       throw err;
     }
   }
@@ -328,7 +328,14 @@ const DataService = (() => {
     unsubscribe(cb) { _callbacks = _callbacks.filter(x => x !== cb); },
 
     /** 手动触发一次数据刷新 */
-    refresh() { return fetchAll(); },
+    refresh() {
+      if (!CONFIG.API_KEY) {
+        _status = 'offline';
+        notify('status', 'offline');
+        return Promise.resolve(null);
+      }
+      return fetchAll();
+    },
 
     startAutoRefresh,
     stopAutoRefresh,
