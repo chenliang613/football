@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.skysports.com)",
+      "WebFetch(domain:www.footballwebpages.co.uk)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:www.goal.com)",
+      "WebFetch(domain:www.nbcsports.com)",
+      "WebFetch(domain:www.xgstat.com)",
+      "WebFetch(domain:sports.yahoo.com)",
+      "WebFetch(domain:www.football365.com)",
+      "WebFetch(domain:www.worldfootball.net)",
+      "WebFetch(domain:www.espn.com)",
+      "WebFetch(domain:www.livescore.com)",
+      "WebFetch(domain:2025.aksi.co)",
+      "WebFetch(domain:www.topscorersfootball.com)",
+      "WebFetch(domain:fbref.com)",
+      "WebFetch(domain:globalsportsarchive.com)",
+      "WebFetch(domain:ooscore.com)"
+    ]
+  }
+}

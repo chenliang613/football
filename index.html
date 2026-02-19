@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>英超分析平台 | Premier League Analytics</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ============================================================
+     TOP NAVIGATION
+     ============================================================ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a class="navbar-brand" href="#">
+      <div class="brand-logo">⚽</div>
+      <div class="brand-text">
+        <span class="brand-title">英超分析平台</span>
+        <span class="brand-sub">Premier League Analytics</span>
+      </div>
+    </a>
+
+    <div class="navbar-tabs">
+      <button class="tab-btn active" data-tab="standings">
+        <span class="tab-icon">🏆</span> 积分榜
+      </button>
+      <button class="tab-btn" data-tab="matches">
+        <span class="tab-icon">⚽</span> 比赛分析
+      </button>
+      <button class="tab-btn" data-tab="players">
+        <span class="tab-icon">👟</span> 球员数据
+      </button>
+      <button class="tab-btn" data-tab="predictions">
+        <span class="tab-icon">🔮</span> 预测分析
+      </button>
+      <button class="tab-btn" data-tab="injuries">
+        <span class="tab-icon">🏥</span> 伤情状态
+      </button>
+    </div>
+
+    <div class="navbar-season">2025/26 Season · GW26</div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<div class="main-content">
+
+  <!-- ========================
+       TAB 1: STANDINGS
+       ======================== -->
+  <div class="tab-panel active" id="tab-standings">
+
+    <!-- KPI Row -->
+    <div class="grid-4 mb-20" id="standings-kpi">
+      <!-- Rendered by standings.js -->
+    </div>
+
+    <div class="grid-2 mb-20">
+      <!-- Standings Table -->
+      <div style="grid-column: 1 / -1;">
+        <div class="section-header">
+          <h2 class="section-title">英超积分榜</h2>
+          <div class="flex gap-8">
+            <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--pl-blue)">
+              <span style="width:10px;height:10px;background:var(--pl-blue);border-radius:2px;display:inline-block"></span> 欧冠
+            </span>
+            <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:orange">
+              <span style="width:10px;height:10px;background:orange;border-radius:2px;display:inline-block"></span> 欧联
+            </span>
+            <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--red)">
+              <span style="width:10px;height:10px;background:var(--red);border-radius:2px;display:inline-block"></span> 降级区
+            </span>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table id="standings-table">
+            <thead>
+              <tr>
+                <th style="width:40px">#</th>
+                <th>球队</th>
+                <th class="center">场</th>
+                <th class="center">胜</th>
+                <th class="center">平</th>
+                <th class="center">负</th>
+                <th class="center">进球</th>
+                <th class="center">失球</th>
+                <th class="center">净胜</th>
+                <th class="center">积分</th>
+                <th>近5场</th>
+              </tr>
+            </thead>
+            <tbody id="standings-tbody">
+              <!-- Rendered by standings.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trend Charts -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">📈 积分趋势（前6名，近6轮）</div>
+        <div class="chart-container chart-md">
+          <canvas id="chart-standings-trend"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎯 进球/失球分布（前8名）</div>
+        <div class="chart-container chart-md">
+          <canvas id="chart-goals-dist"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-standings -->
+
+
+  <!-- ========================
+       TAB 2: MATCHES
+       ======================== -->
+  <div class="tab-panel" id="tab-matches">
+
+    <div class="section-header">
+      <h2 class="section-title">比赛数据分析</h2>
+      <div class="filter-controls">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="completed">已完成</button>
+        <button class="filter-btn" data-filter="upcoming">即将进行</button>
+      </div>
+    </div>
+
+    <!-- Match list -->
+    <div class="matches-grid" id="matches-grid">
+      <!-- Rendered by matches.js -->
+    </div>
+
+    <!-- Match Detail Panel -->
+    <div class="match-detail" id="match-detail">
+      <div class="match-detail-header">
+        <div>
+          <div class="section-title" id="detail-title">比赛详情</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px" id="detail-date"></div>
+        </div>
+        <button id="detail-close" style="background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer">✕</button>
+      </div>
+
+      <div class="grid-2 gap-16" style="margin-bottom:20px">
+        <!-- Stats bars -->
+        <div>
+          <div class="card-title">📊 比赛数据对比</div>
+          <div id="detail-stats-bars">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Radar chart -->
+        <div>
+          <div class="card-title">🕸 雷达图对比</div>
+          <div class="chart-container chart-sm">
+            <canvas id="chart-match-radar"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 gap-16">
+        <!-- Goals timeline -->
+        <div>
+          <div class="card-title">⚽ 进球时间线</div>
+          <div id="detail-goals-timeline"></div>
+          <div class="chart-container chart-sm mt-16">
+            <canvas id="chart-goals-timeline"></canvas>
+          </div>
+        </div>
+
+        <!-- Possession donut -->
+        <div>
+          <div class="card-title">🔵 控球率</div>
+          <div class="chart-container chart-sm">
+            <canvas id="chart-possession"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-matches -->
+
+
+  <!-- ========================
+       TAB 3: PLAYERS
+       ======================== -->
+  <div class="tab-panel" id="tab-players">
+
+    <div class="section-header">
+      <h2 class="section-title">球员数据统计</h2>
+      <div class="filter-controls">
+        <button class="filter-btn active" data-pos="all">全部</button>
+        <button class="filter-btn" data-pos="ST">前锋</button>
+        <button class="filter-btn" data-pos="AM">中场</button>
+        <button class="filter-btn" data-pos="RW">边锋</button>
+        <select class="filter-select" id="team-filter">
+          <option value="all">所有球队</option>
+        </select>
+        <select class="filter-select" id="sort-filter">
+          <option value="goals">按进球排序</option>
+          <option value="assists">按助攻排序</option>
+          <option value="rating">按评分排序</option>
+          <option value="apps">按出场排序</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Top scorers table -->
+    <div class="section-header mt-8">
+      <h3 style="font-size:15px;font-weight:700;color:var(--text-secondary)">射手榜</h3>
+    </div>
+    <div class="table-wrapper mb-20">
+      <table id="scorers-table">
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th>球员</th>
+            <th>球队</th>
+            <th class="center">场次</th>
+            <th class="center">进球</th>
+            <th class="center">助攻</th>
+            <th class="center">射门</th>
+            <th class="center">射正</th>
+            <th class="center">每90分</th>
+            <th class="center">评分</th>
+          </tr>
+        </thead>
+        <tbody id="scorers-tbody">
+          <!-- Rendered by players.js -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Player Cards -->
+    <div class="section-header">
+      <h3 style="font-size:15px;font-weight:700;color:var(--text-secondary)">球员卡片（点击查看详情对比）</h3>
+    </div>
+    <div class="player-grid" id="player-cards">
+      <!-- Rendered by players.js -->
+    </div>
+
+    <!-- Player Detail / Comparison -->
+    <div id="player-detail-panel" style="display:none;margin-top:20px">
+      <div class="grid-2 gap-16">
+        <!-- Player stats radar -->
+        <div class="card">
+          <div class="card-title" id="player-detail-name">球员详情</div>
+          <div class="chart-container chart-md">
+            <canvas id="chart-player-radar"></canvas>
+          </div>
+        </div>
+
+        <!-- Comparison -->
+        <div class="card">
+          <div class="card-title">⚔️ 数据对比</div>
+          <div id="player-compare-bars">
+            <!-- Rendered dynamically -->
+          </div>
+          <div class="chart-container chart-sm mt-16">
+            <canvas id="chart-player-compare"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-players -->
+
+
+  <!-- ========================
+       TAB 4: PREDICTIONS
+       ======================== -->
+  <div class="tab-panel" id="tab-predictions">
+
+    <div class="section-header">
+      <h2 class="section-title">预测与分析</h2>
+      <div class="navbar-season" style="background:rgba(233,0,82,0.15);border-color:var(--accent);color:var(--accent)">
+        第27轮 预测
+      </div>
+    </div>
+
+    <!-- Match predictions -->
+    <div class="grid-2 mb-20" id="predictions-grid">
+      <!-- Rendered by predictions.js -->
+    </div>
+
+    <div class="grid-2 gap-16">
+      <!-- Championship Probability -->
+      <div class="card">
+        <div class="card-title">🏆 夺冠概率预测</div>
+        <div class="champ-list" id="champ-list"></div>
+        <div class="chart-container chart-md mt-16">
+          <canvas id="chart-champ-prob"></canvas>
+        </div>
+      </div>
+
+      <!-- Relegation Danger -->
+      <div>
+        <div class="card-title" style="margin-bottom:12px">🚨 降级危险指数</div>
+        <div id="relegation-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+
+  </div><!-- /tab-predictions -->
+
+
+  <!-- ========================
+       TAB 5: INJURIES
+       ======================== -->
+  <div class="tab-panel" id="tab-injuries">
+
+    <div class="section-header">
+      <h2 class="section-title">关键球员伤情与状态</h2>
+    </div>
+
+    <!-- KPI -->
+    <div class="grid-4 mb-20" id="injury-kpi">
+      <!-- Rendered by injuries.js -->
+    </div>
+
+    <!-- Injury Table -->
+    <div class="section-header">
+      <h3 style="font-size:15px;font-weight:700;color:var(--text-secondary)">伤情一览</h3>
+    </div>
+    <div class="table-wrapper mb-20">
+      <table id="injuries-table">
+        <thead>
+          <tr>
+            <th>球员</th>
+            <th>球队</th>
+            <th>位置</th>
+            <th>伤势类型</th>
+            <th class="center">严重程度</th>
+            <th class="center">状态</th>
+            <th>受伤日期</th>
+            <th>预计复出</th>
+            <th class="center">影响度</th>
+          </tr>
+        </thead>
+        <tbody id="injuries-tbody">
+          <!-- Rendered by injuries.js -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid-2 gap-16 mb-20">
+      <div class="card">
+        <div class="card-title">🔥 球队近期状态评分（近5场）</div>
+        <div class="chart-container chart-md">
+          <canvas id="chart-team-form"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 伤病严重程度分布</div>
+        <div class="chart-container chart-md">
+          <canvas id="chart-injury-severity"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top teams form radar -->
+    <div class="grid-2 gap-16">
+      <div class="card">
+        <div class="card-title">🕸 顶级球队状态雷达（近5场平均）</div>
+        <div class="chart-container chart-lg">
+          <canvas id="chart-form-radar"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">💔 伤病影响球队战力分析</div>
+        <div id="injury-impact-list" style="display:flex;flex-direction:column;gap:12px;margin-top:8px"></div>
+      </div>
+    </div>
+
+  </div><!-- /tab-injuries -->
+
+</div><!-- /main-content -->
+
+<!-- ============================================================
+     SCRIPTS (order matters: data first, then modules, then app)
+     ============================================================ -->
+<script src="js/data.js"></script>
+<script src="js/standings.js"></script>
+<script src="js/matches.js"></script>
+<script src="js/players.js"></script>
+<script src="js/predictions.js"></script>
+<script src="js/injuries.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
