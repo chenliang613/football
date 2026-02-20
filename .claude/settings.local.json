@@ -31,7 +31,8 @@
       "WebFetch(domain:www.givemesport.com)",
       "WebFetch(domain:www.sofascore.com)",
       "WebFetch(domain:www.fotmob.com)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(grep:*)"
     ]
   }
 }

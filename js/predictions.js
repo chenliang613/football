@@ -9,7 +9,7 @@ const PredictionsModule = (() => {
   let selectedId   = null;   // 当前展开的 match id
 
   // 默认预测权重
-  const DEFAULT_W = { ppg: 0.5, form: 0.05, homeAdv: 0.15 };
+  const DEFAULT_W = { ppg: 0.5, form: 0.05, homeAdv: 0.15, injAdj: 0.15 };
   // 每场比赛独立存储的自定义权重（matchId → { ppg, form, homeAdv }）
   const matchWeights = {};
 
@@ -25,6 +25,21 @@ const PredictionsModule = (() => {
     let p = Math.exp(-lambda);
     for (let i = 1; i <= k; i++) p *= lambda / i;
     return p;
+  }
+
+  // -------------------------------------------------------
+  // 伤情实力损耗计算（返回 0~1，1 = 损耗最大）
+  // -------------------------------------------------------
+  function calcInjuryStrengthLoss(teamId) {
+    const injuries = PL_DATA.injuries.filter(i => i.teamId === teamId);
+    if (!injuries.length) return 0;
+    const sevMult  = { Critical: 1.0, High: 0.8, Medium: 0.5, Low: 0.3 };
+    const statMult = { 'Long-term': 1.0, 'Out': 1.0, 'Doubtful': 0.4 };
+    const MAX_SCORE = 30;
+    const score = injuries.reduce((sum, inj) => {
+      return sum + inj.impact * (sevMult[inj.severity] || 0.5) * (statMult[inj.status] || 0.5);
+    }, 0);
+    return Math.min(score / MAX_SCORE, 1.0);
   }
 
   // -------------------------------------------------------
@@ -44,6 +59,12 @@ const PredictionsModule = (() => {
 
     let hStr = hPPG * w.ppg + hForm * w.form + w.homeAdv;
     let aStr = aPPG * w.ppg + aForm * w.form;
+
+    // 伤情减益：主力伤缺降低球队实力
+    const hInjLoss = calcInjuryStrengthLoss(homeId);
+    const aInjLoss = calcInjuryStrengthLoss(awayId);
+    hStr *= (1 - hInjLoss * (w.injAdj || 0));
+    aStr *= (1 - aInjLoss * (w.injAdj || 0));
 
     const base = hStr + aStr;
     let draw    = 0.27;
@@ -252,14 +273,15 @@ const PredictionsModule = (() => {
         <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:10px">
           ⚙️ 调整预测参数${hasCustom ? ' <span class="custom-w-badge">已自定义</span>' : ''}
         </div>
-        ${sliderHTML('sl-ppg',  '积分权重',   Math.round(w.ppg * 100),    10, 90)}
-        ${sliderHTML('sl-form', '状态权重',   Math.round(w.form * 1000),   1, 50)}
-        ${sliderHTML('sl-hadv', '主场加成 %', Math.round(w.homeAdv * 100), 0, 30)}
+        ${sliderHTML('sl-ppg',  '积分权重',   Math.round(w.ppg * 100),         10, 90)}
+        ${sliderHTML('sl-form', '状态权重',   Math.round(w.form * 1000),        1, 50)}
+        ${sliderHTML('sl-hadv', '主场加成 %', Math.round(w.homeAdv * 100),      0, 30)}
+        ${sliderHTML('sl-inj',  '伤情减益 %', Math.round((w.injAdj||0.15)*100), 0, 30)}
         <button onclick="PredictionsModule.resetWeights()" class="pred-reset-btn">↺ 重置此场</button>
       </div>
     `;
 
-    ['sl-ppg','sl-form','sl-hadv'].forEach(id => {
+    ['sl-ppg','sl-form','sl-hadv','sl-inj'].forEach(id => {
       document.getElementById(id)?.addEventListener('input', () => onSliderChange(m));
     });
   }
@@ -278,17 +300,20 @@ const PredictionsModule = (() => {
     const ppgEl  = document.getElementById('sl-ppg');
     const formEl = document.getElementById('sl-form');
     const hadvEl = document.getElementById('sl-hadv');
-    if (!ppgEl || !formEl || !hadvEl) return;
+    const injEl  = document.getElementById('sl-inj');
+    if (!ppgEl || !formEl || !hadvEl || !injEl) return;
 
     matchWeights[m.id] = {
       ppg:     ppgEl.value  / 100,
       form:    formEl.value / 1000,
       homeAdv: hadvEl.value / 100,
+      injAdj:  injEl.value  / 100,
     };
 
     document.getElementById('sl-ppg-val').textContent  = ppgEl.value;
     document.getElementById('sl-form-val').textContent = formEl.value;
     document.getElementById('sl-hadv-val').textContent = hadvEl.value;
+    document.getElementById('sl-inj-val').textContent  = injEl.value;
 
     // 更新标题中的自定义标记
     const titleEl = document.querySelector('.pred-sliders-box > div');
@@ -371,11 +396,15 @@ const PredictionsModule = (() => {
     const hForm = hF ? hF.avg : 5;
     const aForm = aF ? aF.avg : 5;
 
+    const hInjPct = +(calcInjuryStrengthLoss(m.homeId) * 100).toFixed(0);
+    const aInjPct = +(calcInjuryStrengthLoss(m.awayId) * 100).toFixed(0);
+
     const rows = [
       { label:'积分/场', hv: hPPG, av: aPPG, max: 3,   fmt: v => v.toFixed(2) },
       { label:'进球/场', hv: hAtk, av: aAtk, max: 3,   fmt: v => v.toFixed(2) },
       { label:'失球/场', hv: hDef, av: aDef, max: 3,   fmt: v => v.toFixed(2), invert: true },
       { label:'近期状态', hv: hForm, av: aForm, max: 10, fmt: v => v.toFixed(1) },
+      { label:'伤情减损', hv: hInjPct, av: aInjPct, max: 100, fmt: v => v + '%', invert: true },
     ];
 
     el.innerHTML = `
@@ -682,6 +711,10 @@ const PredictionsModule = (() => {
     const hInj = PL_DATA.injuries.filter(i => i.teamId === m.homeId && (i.status==='Out'||i.status==='Long-term'));
     const aInj = PL_DATA.injuries.filter(i => i.teamId === m.awayId && (i.status==='Out'||i.status==='Long-term'));
 
+    const w = getW(m.id);
+    const hInjPct = Math.round(calcInjuryStrengthLoss(m.homeId) * w.injAdj * 100);
+    const aInjPct = Math.round(calcInjuryStrengthLoss(m.awayId) * w.injAdj * 100);
+
     const topScore = pred.topScores[0];
     const topScoreStr = `${topScore.h}-${topScore.a}`;
     const topScorePct = Math.round(topScore.p * 100);
@@ -695,10 +728,10 @@ const PredictionsModule = (() => {
 
     // 伤情文字
     const hInjText = hInj.length
-      ? `${hTeam.name}需缺少 ${hInj.map(i=>i.name).join('、')} 等 ${hInj.length} 名球员`
+      ? `${hTeam.name}需缺少 ${hInj.map(i=>i.name).join('、')} 等 ${hInj.length} 名球员${hInjPct > 0 ? `，综合实力预计减损 <strong style="color:var(--red)">${hInjPct}%</strong>` : ''}`
       : `${hTeam.name}全员可用`;
     const aInjText = aInj.length
-      ? `${aTeam.name}的 ${aInj.map(i=>i.name).join('、')} 亦无法出战`
+      ? `${aTeam.name}的 ${aInj.map(i=>i.name).join('、')} 亦无法出战${aInjPct > 0 ? `，综合实力预计减损 <strong style="color:var(--red)">${aInjPct}%</strong>` : ''}`
       : `${aTeam.name}伤情较轻`;
 
     // H2H 文字
