@@ -151,9 +151,9 @@ const PredictionsModule = (() => {
             </div>
           </div>
           <div class="prob-bars mt-12">
-            <div class="prob-bar win"  style="width:${pred.homeWin}%"></div>
-            <div class="prob-bar draw" style="width:${pred.draw}%"></div>
-            <div class="prob-bar lose" style="width:${pred.awayWin}%"></div>
+            <div class="prob-bar win"  style="flex:${pred.homeWin}"></div>
+            <div class="prob-bar draw" style="flex:${pred.draw}"></div>
+            <div class="prob-bar lose" style="flex:${pred.awayWin}"></div>
           </div>
           <div class="prob-labels mt-6">
             <div class="prob-label"><span class="pct text-green">${pred.homeWin}%</span><span class="lbl">主胜</span></div>
@@ -199,6 +199,7 @@ const PredictionsModule = (() => {
     renderH2H(m);
     renderKeyPlayers(m);
     renderInjuryImpact(m);
+    renderMatchNews(m);
     renderAnalysisText(m, pred);
   }
 
@@ -685,7 +686,49 @@ const PredictionsModule = (() => {
   }
 
   // -------------------------------------------------------
-  // ⑩ 生成分析文字
+  // ⑩ 赛前新闻动态
+  // -------------------------------------------------------
+  function renderMatchNews(m) {
+    const el = document.getElementById('pred-news');
+    if (!el) return;
+
+    const news = PL_DATA.matchNews && PL_DATA.matchNews[m.id];
+    if (!news || !news.length) {
+      el.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:8px 0">暂无赛前新闻</div>';
+      return;
+    }
+
+    const hTeam = PL_DATA.getTeam(m.homeId);
+    const aTeam = PL_DATA.getTeam(m.awayId);
+
+    const typeIcon = { injury:'🏥', form:'📈', tactical:'🎯', suspension:'🟥', context:'🔥' };
+    const impactLabel = { high:'高影响', medium:'中影响', low:'低影响' };
+    const impactColor = { high:'var(--red)', medium:'var(--yellow)', low:'var(--text-muted)' };
+
+    function affectStyle(affect) {
+      if (affect === 'home') return `color:${hTeam.color};background:${hTeam.color}22`;
+      if (affect === 'away') return `color:${aTeam.color};background:${aTeam.color}22`;
+      return 'color:var(--text-secondary);background:rgba(255,255,255,0.08)';
+    }
+    function affectLabel(affect) {
+      return affect === 'home' ? hTeam.short : affect === 'away' ? aTeam.short : '双方';
+    }
+
+    el.innerHTML = `<div class="news-grid">${news.map(n => `
+      <div class="news-item news-${n.impact}">
+        <div class="news-header">
+          <span class="news-type-icon">${typeIcon[n.type] || '📰'}</span>
+          <span class="news-title">${n.title}</span>
+          <span class="news-tag" style="${affectStyle(n.affect)}">${affectLabel(n.affect)}</span>
+          <span class="news-impact-dot" style="background:${impactColor[n.impact]}" title="${impactLabel[n.impact]}"></span>
+        </div>
+        <div class="news-body">${n.body}</div>
+      </div>
+    `).join('')}</div>`;
+  }
+
+  // -------------------------------------------------------
+  // ⑪ 生成分析文字
   // -------------------------------------------------------
   function renderAnalysisText(m, pred) {
     const el = document.getElementById('pred-analysis-text');
