@@ -8,8 +8,14 @@ const PredictionsModule = (() => {
   let predRadar    = null;
   let selectedId   = null;   // 当前展开的 match id
 
-  // 可调节预测权重（由滑块实时修改）
-  const W = { ppg: 0.5, form: 0.05, homeAdv: 0.15 };
+  // 默认预测权重
+  const DEFAULT_W = { ppg: 0.5, form: 0.05, homeAdv: 0.15 };
+  // 每场比赛独立存储的自定义权重（matchId → { ppg, form, homeAdv }）
+  const matchWeights = {};
+
+  function getW(matchId) {
+    return matchWeights[matchId] || { ...DEFAULT_W };
+  }
 
   // -------------------------------------------------------
   // 泊松分布（用于比分概率）
@@ -25,7 +31,7 @@ const PredictionsModule = (() => {
   // 核心预测引擎（支持可调权重）
   // -------------------------------------------------------
   function predictFull(homeId, awayId, w) {
-    w = w || W;
+    w = w || { ...DEFAULT_W };
     const hS = PL_DATA.getStanding(homeId);
     const aS = PL_DATA.getStanding(awayId);
     const hF = PL_DATA.teamForm[homeId];
@@ -88,9 +94,10 @@ const PredictionsModule = (() => {
     const grid = document.getElementById('predictions-grid');
 
     grid.innerHTML = upcoming.map(m => {
-      const pred   = predictFull(m.homeId, m.awayId);
-      const hTeam  = PL_DATA.getTeam(m.homeId);
-      const aTeam  = PL_DATA.getTeam(m.awayId);
+      const pred     = predictFull(m.homeId, m.awayId, getW(m.id));
+      const hTeam    = PL_DATA.getTeam(m.homeId);
+      const aTeam    = PL_DATA.getTeam(m.awayId);
+      const hasCustom = !!matchWeights[m.id];
 
       let favText = '势均力敌', favColor = 'var(--yellow)';
       if (pred.homeWin > pred.awayWin + 10) { favText = `${hTeam.short} 主场优势`; favColor = hTeam.color; }
@@ -103,7 +110,7 @@ const PredictionsModule = (() => {
              data-mid="${m.id}"
              onclick="PredictionsModule.selectMatch(${m.id})">
           <div class="pred-card-header">
-            <span style="font-size:11px;color:var(--text-muted)">第${m.round}轮 · ${m.date}</span>
+            <span style="font-size:11px;color:var(--text-muted)">第${m.round}轮 · ${m.date}${hasCustom ? ' <span class="custom-w-badge">自定义</span>' : ''}</span>
             <span style="font-size:11px;font-weight:700;color:${favColor}">${favText}</span>
           </div>
           <div class="prediction-teams">
@@ -161,7 +168,7 @@ const PredictionsModule = (() => {
     document.getElementById('pred-detail-meta').textContent =
       `第${m.round}轮 · ${m.date} · 主场：${hTeam.name}`;
 
-    const pred = predictFull(m.homeId, m.awayId);
+    const pred = predictFull(m.homeId, m.awayId, getW(m.id));
     renderProbDisplay(m, pred);
     renderSliders(m);
     renderScoreProbs(m, pred);
@@ -238,13 +245,17 @@ const PredictionsModule = (() => {
   // -------------------------------------------------------
   function renderSliders(m) {
     const el = document.getElementById('pred-sliders');
+    const w  = getW(m.id);
+    const hasCustom = !!matchWeights[m.id];
     el.innerHTML = `
       <div class="pred-sliders-box">
-        <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:10px">⚙️ 调整预测参数</div>
-        ${sliderHTML('sl-ppg',  '积分权重',   Math.round(W.ppg * 100),    10, 90)}
-        ${sliderHTML('sl-form', '状态权重',   Math.round(W.form * 1000),   1, 50)}
-        ${sliderHTML('sl-hadv', '主场加成 %', Math.round(W.homeAdv * 100), 0, 30)}
-        <button onclick="PredictionsModule.resetWeights()" class="pred-reset-btn">↺ 重置</button>
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:10px">
+          ⚙️ 调整预测参数${hasCustom ? ' <span class="custom-w-badge">已自定义</span>' : ''}
+        </div>
+        ${sliderHTML('sl-ppg',  '积分权重',   Math.round(w.ppg * 100),    10, 90)}
+        ${sliderHTML('sl-form', '状态权重',   Math.round(w.form * 1000),   1, 50)}
+        ${sliderHTML('sl-hadv', '主场加成 %', Math.round(w.homeAdv * 100), 0, 30)}
+        <button onclick="PredictionsModule.resetWeights()" class="pred-reset-btn">↺ 重置此场</button>
       </div>
     `;
 
@@ -269,24 +280,34 @@ const PredictionsModule = (() => {
     const hadvEl = document.getElementById('sl-hadv');
     if (!ppgEl || !formEl || !hadvEl) return;
 
-    W.ppg     = ppgEl.value  / 100;
-    W.form    = formEl.value / 1000;
-    W.homeAdv = hadvEl.value / 100;
+    matchWeights[m.id] = {
+      ppg:     ppgEl.value  / 100,
+      form:    formEl.value / 1000,
+      homeAdv: hadvEl.value / 100,
+    };
 
     document.getElementById('sl-ppg-val').textContent  = ppgEl.value;
     document.getElementById('sl-form-val').textContent = formEl.value;
     document.getElementById('sl-hadv-val').textContent = hadvEl.value;
 
-    const pred = predictFull(m.homeId, m.awayId);
+    // 更新标题中的自定义标记
+    const titleEl = document.querySelector('.pred-sliders-box > div');
+    if (titleEl) titleEl.innerHTML = '⚙️ 调整预测参数 <span class="custom-w-badge">已自定义</span>';
+
+    const pred = predictFull(m.homeId, m.awayId, matchWeights[m.id]);
     updateProbDisplay(m, pred);
+    // 刷新卡片列表以更新自定义标记
+    renderPredictions();
   }
 
   function resetWeights() {
-    W.ppg = 0.5; W.form = 0.05; W.homeAdv = 0.15;
     const m = PL_DATA.matches.find(x => x.id === selectedId);
-    if (m) renderSliders(m);
-    const pred = predictFull(m.homeId, m.awayId);
+    if (!m) return;
+    delete matchWeights[m.id];
+    renderSliders(m);
+    const pred = predictFull(m.homeId, m.awayId, getW(m.id));
     updateProbDisplay(m, pred);
+    renderPredictions();
   }
 
   // -------------------------------------------------------

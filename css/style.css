@@ -1540,6 +1540,15 @@ select.filter-select:focus { border-color: var(--accent); }
 }
 .pred-reset-btn:hover { background: rgba(233,0,82,0.2); }
 
+/* 自定义权重标记 */
+.custom-w-badge {
+  display: inline-block;
+  font-size: 10px; padding: 1px 6px; border-radius: 8px;
+  background: rgba(233,0,82,0.15); color: var(--accent);
+  border: 1px solid rgba(233,0,82,0.4); margin-left: 5px;
+  font-weight: 700; vertical-align: middle;
+}
+
 /* 泊松比分表 */
 .score-dist-grid { display: flex; flex-direction: column; gap: 5px; }
 .score-dist-row {
