@@ -643,53 +643,53 @@ const PL_DATA = {
   // type:   'injury' | 'form' | 'tactical' | 'suspension' | 'context'
   // ----------------------------------------------------------
   matchNews: {
-    20: [ // Man City vs Newcastle
+    "2-10": [ // Man City vs Newcastle
       { type:'injury',  affect:'away',    impact:'high',   title:'Bruno Guimarães 确认缺阵',            body:'纽卡斯尔核心中场 Feb 12 受腘绳肌伤，医疗组评估缺席 3-4 周，无缘出战曼城。其缺席严重削弱纽卡斯尔中场控制与二次球争抢能力。' },
       { type:'form',    affect:'home',    impact:'high',   title:'曼城当前联赛 5 连胜',                 body:'曼城近 5 场全胜（W W W W W），哈兰德本赛季已轰入 22 球，主场场均进球 2.1 个，攻势如虹，主场不败纪录延续 12 场。' },
       { type:'injury',  affect:'home',    impact:'medium', title:'多库、瓜尔迪奥尔仍未复出',             body:'多库腓肠肌伤势、瓜尔迪奥尔踝伤均预计 3 月初归队，左路宽度与后防深度受到一定影响，但替补阵容依然充裕。' },
     ],
-    21: [ // Aston Villa vs Leeds
+    "3-15": [ // Aston Villa vs Leeds
       { type:'injury',  affect:'home',    impact:'high',   title:'卡马拉报销，麦金临战存疑',             body:'维拉双中场支柱卡马拉（膝伤）本轮无法出场，麦金（膝关节扭伤）临战前状态存疑，中场人员吃紧或迫使主帅临时变阵。' },
       { type:'form',    affect:'away',    impact:'medium', title:'利兹近 5 场 3 胜，保级信心大增',       body:'卡尔弗特-莱文回归主力后状态明显回升，近 5 场（D W L D W）拿下 7 分，球队逐渐站稳积分榜，远离降级区。' },
       { type:'context', affect:'home',    impact:'medium', title:'维拉力保欧冠席位刻不容缓',             body:'维拉积 50 分排名第三，与第四名差距仅 5 分，欧冠席位竞争极为激烈，主场丢分将直接影响赛季走向。' },
     ],
-    22: [ // Brentford vs Brighton
+    "7-14": [ // Brentford vs Brighton
       { type:'form',    affect:'home',    impact:'medium', title:'布伦特福德近 4 场不败',                body:'布伦特福德近 4 场 1 平 3 胜，伊戈尔-蒂亚戈本赛季 17 球领跑球队射手榜，与路易斯-波特尔的配合日趋默契，主场氛围热烈。' },
       { type:'form',    affect:'away',    impact:'medium', title:'布莱顿近 3 场仅积 1 分',               body:'近 3 场（L D D）低迷，锋线效率明显下滑，韦尔贝克 35 岁高龄体力管理存疑，球队亟需三分止住颓势。' },
       { type:'tactical',affect:'neutral', impact:'low',    title:'双方战术风格对抗，控球权归属是关键',   body:'布莱顿传控体系遭遇布伦特福德高压逼抢，中场争夺将决定比赛走向。历史 H2H 双方胜负平均摊，难分伯仲。' },
     ],
-    23: [ // Chelsea vs Burnley
+    "5-19": [ // Chelsea vs Burnley
       { type:'injury',  affect:'home',    impact:'medium', title:'切尔西后防线多人带伤',                 body:'科尔威尔（ACL 长期报销）、拉维亚（大腿）、库库雷利亚（腘绳肌）均无法出场，后卫线折损严重，防守端存在隐忧。' },
       { type:'context', affect:'away',    impact:'high',   title:'伯恩利深陷降级区，背水一战',           body:'伯恩利仅 18 分排名倒数第二，距安全区差 12 分，剩余 11 场几乎场场生死，客战斯坦福桥被视为本赛季最难攻克的客场之一。' },
       { type:'form',    affect:'home',    impact:'medium', title:'帕尔默状态火热，切尔西进攻压制力强',   body:'科尔·帕尔默本赛季 8 球 10 助攻，若昂·佩德罗同贡献 10 球，切尔西主场进攻端效率联赛前列，H2H 历史主场 10 胜 3 平 2 负。' },
     ],
-    24: [ // Crystal Palace vs Wolves
+    "13-20": [ // Crystal Palace vs Wolves
       { type:'context', affect:'away',    impact:'high',   title:'狼队垫底挣扎，但上轮力平枪手',         body:'狼队 27 场仅 10 分遭 19 败，联赛最差战绩。然而上轮 2-2 逼平枪手（94 分钟绝平）证明球队仍有斗志，卡莱亚菲奥里乌龙成就历史性战果。' },
       { type:'form',    affect:'home',    impact:'medium', title:'水晶宫主场成绩起伏不定',               body:'水晶宫近 5 场（L W D D W）6 分，主场成绩不够稳定，上轮 1-0 小胜伯恩利，但马泰塔与厄兹的配合尚需磨合。' },
       { type:'context', affect:'neutral', impact:'low',    title:'H2H 历史完全均势，爆冷可能性存在',     body:'双方历史 4-4-4 战绩对等，总进球 14-13 极为接近，狼队在保级压力下往往会奉献超水平发挥，需警惕意外结果。' },
     ],
-    25: [ // Nottm Forest vs Liverpool
+    "17-6": [ // Nottm Forest vs Liverpool
       { type:'form',    affect:'away',    impact:'high',   title:'利物浦近期状态严重下滑',               body:'利物浦近 5 场（W L L D W）仅 7 分，中间连续两场联赛失利，攻防两端均现疲态，客场连续两场未能赢球。' },
       { type:'injury',  affect:'away',    impact:'high',   title:'恩多踝伤缺席，中场防守覆盖减弱',       body:'日本国脚恩多（踝/足部伤势，Feb 11 受伤）预计 3 月中旬复出，其缺席导致利物浦中场防守拦截和二次球处理明显下降。' },
       { type:'context', affect:'home',    impact:'medium', title:'诺森汉姆森林主场防守稳固',             body:'森林今赛季主场 8 场仅失 11 球，防守体系在主帅调教下极为紧密，利物浦客场得分效率历来不高，H2H 利物浦客场仅 4 胜。' },
     ],
-    26: [ // West Ham vs Bournemouth
+    "18-9": [ // West Ham vs Bournemouth
       { type:'context', affect:'home',    impact:'high',   title:'西汉姆主场生死战，降级警报长鸣',       body:'西汉姆仅 24 分位居降级区第 18，本轮若败则与安全区差距拉大至 7 分，保级形势将极度危急，主场球迷压力剧增。' },
       { type:'form',    affect:'away',    impact:'medium', title:'伯恩茅斯近 5 场积 9 分，客场表现稳定', body:'近 5 场（W D W D D）9 分，克卢沃特本赛季 11 球领跑球队，瓦塔拉左路突破速度极快，对西汉姆右后卫构成持续威胁。' },
       { type:'context', affect:'neutral', impact:'high',   title:'中下游六分大战，胜者大幅稳固位置',     body:'此役对西汉姆而言是不能输的保级关键战，而伯恩茅斯若能拿下将进一步拉开与中下游的安全距离，双方都有强烈的求胜动机。' },
     ],
-    27: [ // Sunderland vs Fulham
+    "11-12": [ // Sunderland vs Fulham
       { type:'form',    affect:'home',    impact:'medium', title:'桑德兰主场依靠球迷优势压制对手',       body:'桑德兰近 5 场（L L D D W）5 分，主场气氛热烈，球队在主场防守体系较为稳固，今赛季主场失球数为联赛中游水平。' },
       { type:'form',    affect:'away',    impact:'medium', title:'富勒姆近期连负，状态低迷',             body:'富勒姆近 5 场（L L W L D）4 分，最近两场联赛失利，安德烈亚斯的创造力未能有效转化得分，进攻效率堪忧。' },
       { type:'context', affect:'neutral', impact:'low',    title:'中游争夺，积分对双方均有意义',         body:'两队均处于中游位置，H2H 历史富勒姆稍占优（3-3-4），本赛季双方都需要积分来巩固赛季成果，料将是一场平衡对抗。' },
     ],
-    28: [ // Tottenham vs Arsenal (北伦敦德比!)
+    "16-1": [ // Tottenham vs Arsenal (北伦敦德比!)
       { type:'injury',  affect:'away',    impact:'high',   title:'哈弗茨因伤确认缺席北伦敦德比',         body:'哈弗茨在 Feb 18 对阵狼队时腿部肌肉旧伤复发，预计缺席 3 周，错过这场关键德比。本赛季他已贡献 7 球 5 助攻，是枪手锋线核心。' },
       { type:'injury',  affect:'away',    impact:'high',   title:'萨卡、梅里诺同样无缘出战',             body:'萨卡腹股沟伤（预计 3 月 15 日归队）、梅里诺跖骨手术（赛季报销）均无法登场，枪手两大进攻核心同时缺阵，威胁大幅下降。' },
       { type:'injury',  affect:'home',    impact:'high',   title:'热刺三将缺阵，进攻线同样捉襟见肘',     body:'麦迪逊（ACL，9 月复出）、里查利森（腘绳肌）、贝尔瓦尔（踝关节手术）均无法出战，热刺中前场人员同样极为紧张。' },
       { type:'context', affect:'neutral', impact:'high',   title:'北伦敦德比：榜首对降级边缘的戏剧性对决', body:'枪手 58 分领跑积分榜，热刺 29 分仅高出降级区 9 分，积分差距达 29 分——这是近年来北伦敦德比双方积分差最大的一届，历史上德比战从不缺爆冷。' },
     ],
-    29: [ // Everton vs Man Utd
+    "8-4": [ // Everton vs Man Utd
       { type:'form',    affect:'away',    impact:'medium', title:'曼联近 5 场 3 胜 2 平，状态明显回暖',   body:'曼联近 5 场（D W D W W）11 分，本博本赛季 9 球 5 助攻保持高效，塞斯科的插上跑位与费尔南德斯的长传配合逐渐成熟。' },
       { type:'context', affect:'home',    impact:'medium', title:'古迪逊主场氛围素来令客队头疼',         body:'埃弗顿 37 分排第 8，贝托主场表现出色，本赛季主场 6 胜 4 平 3 负，古迪逊公园的嘈杂氛围历来令强队表现失常。' },
       { type:'context', affect:'neutral', impact:'low',    title:'H2H 历史六五六，双方均势明显',         body:'历史交锋 6-5-6 完全均势，总进球 20-20 同样持平，此役将是一场势均力敌的激烈争夺，任何细节都可能左右结局。' },

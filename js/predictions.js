@@ -4,9 +4,11 @@
 
 const PredictionsModule = (() => {
 
-  let champChart   = null;
-  let predRadar    = null;
-  let selectedId   = null;   // 当前展开的 match id
+  let champChart      = null;
+  let predRadar       = null;
+  let selectedId      = null;   // 当前展开的 match id（可能是静态 id 或 API id）
+  let selectedHomeId  = null;   // 主队本地 id（API 刷新后依然有效）
+  let selectedAwayId  = null;   // 客队本地 id
 
   // 默认预测权重
   const DEFAULT_W = { ppg: 0.5, form: 0.05, homeAdv: 0.15, injAdj: 0.15 };
@@ -175,7 +177,9 @@ const PredictionsModule = (() => {
     const m = PL_DATA.matches.find(x => x.id === matchId);
     if (!m || m.status !== 'upcoming') return;
 
-    selectedId = matchId;
+    selectedId     = matchId;
+    selectedHomeId = m.homeId;
+    selectedAwayId = m.awayId;
     renderPredictions();   // 刷新选中高亮
 
     const panel = document.getElementById('prediction-detail');
@@ -204,7 +208,9 @@ const PredictionsModule = (() => {
   }
 
   function closeDetail() {
-    selectedId = null;
+    selectedId     = null;
+    selectedHomeId = null;
+    selectedAwayId = null;
     document.getElementById('prediction-detail').classList.remove('visible');
     renderPredictions();
   }
@@ -692,7 +698,7 @@ const PredictionsModule = (() => {
     const el = document.getElementById('pred-news');
     if (!el) return;
 
-    const news = PL_DATA.matchNews && PL_DATA.matchNews[m.id];
+    const news = PL_DATA.matchNews && PL_DATA.matchNews[`${m.homeId}-${m.awayId}`];
     if (!news || !news.length) {
       el.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:8px 0">暂无赛前新闻</div>';
       return;
@@ -908,9 +914,12 @@ const PredictionsModule = (() => {
     renderPredictions();
     renderChampionship();
     renderRelegation();
-    if (selectedId) {
-      const m = PL_DATA.matches.find(x => x.id === selectedId);
-      if (m) selectMatch(selectedId);
+    if (selectedHomeId && selectedAwayId) {
+      // 用稳定的 homeId/awayId 重新查找比赛（API 刷新后 match.id 会变，但 homeId/awayId 不变）
+      const m = PL_DATA.matches.find(
+        x => x.homeId === selectedHomeId && x.awayId === selectedAwayId && x.status === 'upcoming'
+      );
+      if (m) selectMatch(m.id);
     }
   }
 

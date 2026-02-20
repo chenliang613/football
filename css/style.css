@@ -1636,6 +1636,12 @@ select.filter-select:focus { border-color: var(--accent); }
 .inj-doubt    { background: rgba(255,214,0,0.15); color: var(--yellow); }
 
 /* 赛前新闻动态 */
+.news-section {
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
 .news-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
