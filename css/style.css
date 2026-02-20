@@ -1689,6 +1689,48 @@ select.filter-select:focus { border-color: var(--accent); }
   line-height: 1.65;
 }
 
+/* bet365 盘口参考行 */
+.odds-ref {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.07);
+  flex-wrap: wrap;
+}
+.odds-ref-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-right: 2px;
+  white-space: nowrap;
+}
+.odds-cell {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+.odds-val {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.odds-implied {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.odds-lbl {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.odds-sep {
+  color: var(--border);
+  font-size: 12px;
+}
+
 /* AI 分析文字 */
 .pred-analysis-text { margin-top: 8px; }
 .analysis-para {

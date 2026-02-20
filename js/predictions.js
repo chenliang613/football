@@ -10,8 +10,8 @@ const PredictionsModule = (() => {
   let selectedHomeId  = null;   // 主队本地 id（API 刷新后依然有效）
   let selectedAwayId  = null;   // 客队本地 id
 
-  // 默认预测权重
-  const DEFAULT_W = { ppg: 0.5, form: 0.05, homeAdv: 0.15, injAdj: 0.15 };
+  // 默认预测权重（归一化模型下各维度均在 0-1 区间）
+  const DEFAULT_W = { ppg: 0.5, form: 0.3, homeAdv: 0.15, injAdj: 0.15, bookOdds: 0.5 };
   // 每场比赛独立存储的自定义权重（matchId → { ppg, form, homeAdv }）
   const matchWeights = {};
 
@@ -59,8 +59,17 @@ const PredictionsModule = (() => {
     const hForm  = hF ? hF.avg : 6;
     const aForm  = aF ? aF.avg : 6;
 
-    let hStr = hPPG * w.ppg + hForm * w.form + w.homeAdv;
-    let aStr = aPPG * w.ppg + aForm * w.form;
+    // 归一化：积分/场用联赛当前最高值归一化至 0-1，状态分同理（1-10 → 0-1）
+    // 归一化后权重才能真正控制各因素相对比重，滑块调整才有明显效果
+    const allS   = PL_DATA.standings;
+    const maxPPG = allS.length ? Math.max(...allS.map(s => s.pts / s.played)) : 3;
+    const hPPGn  = hPPG  / maxPPG;   // 0-1
+    const aPPGn  = aPPG  / maxPPG;   // 0-1
+    const hFormN = hForm / 10;        // 0-1
+    const aFormN = aForm / 10;        // 0-1
+
+    let hStr = hPPGn * w.ppg + hFormN * w.form + w.homeAdv;
+    let aStr = aPPGn * w.ppg + aFormN * w.form;
 
     // 伤情减益：主力伤缺降低球队实力
     const hInjLoss = calcInjuryStrengthLoss(homeId);
@@ -86,6 +95,39 @@ const PredictionsModule = (() => {
     const sum = homeWin + draw + awayWin;
     homeWin /= sum; draw /= sum; awayWin /= sum;
 
+    // ── bet365 盘口融合 ──────────────────────────────────────
+    // 同时支持正向/反向键（应对主客场与静态数据相反的情况）
+    const fwdOddsKey = `${homeId}-${awayId}`;
+    const revOddsKey = `${awayId}-${homeId}`;
+    const db = PL_DATA.matchOdds;
+    let rawOdds = db && (db[fwdOddsKey] || db[revOddsKey]);
+    const oddsFlipped = !!(db && !db[fwdOddsKey] && db[revOddsKey]);
+
+    let exposedOdds = null;   // 传给渲染函数展示
+    const bw = w.bookOdds ?? 0.5;
+
+    if (rawOdds && bw > 0) {
+      const oH = oddsFlipped ? rawOdds.away : rawOdds.home;
+      const oD = rawOdds.draw;
+      const oA = oddsFlipped ? rawOdds.home : rawOdds.away;
+      exposedOdds = { home: oH, draw: oD, away: oA };
+
+      // 去除庄家抽水后归一化为真实隐含概率
+      const iH = 1 / oH, iD = 1 / oD, iA = 1 / oA;
+      const iSum = iH + iD + iA;
+      const bkH = iH / iSum, bkD = iD / iSum, bkA = iA / iSum;
+
+      // 加权混合：bw=0 纯模型，bw=1 纯盘口
+      homeWin = homeWin * (1 - bw) + bkH * bw;
+      draw    = draw    * (1 - bw) + bkD * bw;
+      awayWin = awayWin * (1 - bw) + bkA * bw;
+
+      // 再次归一化（浮点精度保护）
+      const blendSum = homeWin + draw + awayWin;
+      homeWin /= blendSum; draw /= blendSum; awayWin /= blendSum;
+    }
+    // ────────────────────────────────────────────────────────
+
     // 预测进球（基于攻防数据）
     const hG = (hS ? hS.gf / hS.played : 1.4) * 0.6 + (aS ? aS.ga / aS.played : 1.2) * 0.4;
     const aG = (aS ? aS.gf / aS.played : 1.2) * 0.6 + (hS ? hS.ga / hS.played : 1.4) * 0.4;
@@ -106,6 +148,7 @@ const PredictionsModule = (() => {
       hGoals:  +hG.toFixed(2),
       aGoals:  +aG.toFixed(2),
       topScores: scores.slice(0, 6),
+      odds: exposedOdds,   // bet365 盘口（归一化主客场后）
     };
   }
 
@@ -114,9 +157,17 @@ const PredictionsModule = (() => {
   // -------------------------------------------------------
   function renderPredictions() {
     const upcoming = PL_DATA.matches.filter(m => m.status === 'upcoming');
+    // 只展示最近一轮（避免 API 返回全赛季未来场次导致新闻全空）
+    const nextRound = upcoming.length ? Math.min(...upcoming.map(m => m.round)) : null;
+    const shown = nextRound !== null ? upcoming.filter(m => m.round === nextRound) : [];
     const grid = document.getElementById('predictions-grid');
 
-    grid.innerHTML = upcoming.map(m => {
+    if (!shown.length) {
+      grid.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px 20px">暂无即将到来的赛事</div>';
+      return;
+    }
+
+    grid.innerHTML = shown.map(m => {
       const pred     = predictFull(m.homeId, m.awayId, getW(m.id));
       const hTeam    = PL_DATA.getTeam(m.homeId);
       const aTeam    = PL_DATA.getTeam(m.awayId);
@@ -253,6 +304,32 @@ const PredictionsModule = (() => {
         <span style="color:${hTeam.color}">预测进球 ${pred.hGoals}</span>
         <span style="color:${aTeam.color}">预测进球 ${pred.aGoals}</span>
       </div>
+      ${pred.odds ? (() => {
+        const iH = +(100 / pred.odds.home).toFixed(1);
+        const iD = +(100 / pred.odds.draw).toFixed(1);
+        const iA = +(100 / pred.odds.away).toFixed(1);
+        return `
+      <div class="odds-ref">
+        <span class="odds-ref-label">📊 bet365</span>
+        <span class="odds-cell">
+          <span class="odds-val" style="color:${hTeam.color}">${pred.odds.home}</span>
+          <span class="odds-implied">${iH}%</span>
+          <span class="odds-lbl">主胜</span>
+        </span>
+        <span class="odds-sep">·</span>
+        <span class="odds-cell">
+          <span class="odds-val" style="color:var(--yellow)">${pred.odds.draw}</span>
+          <span class="odds-implied">${iD}%</span>
+          <span class="odds-lbl">平局</span>
+        </span>
+        <span class="odds-sep">·</span>
+        <span class="odds-cell">
+          <span class="odds-val" style="color:${aTeam.color}">${pred.odds.away}</span>
+          <span class="odds-implied">${iA}%</span>
+          <span class="odds-lbl">客胜</span>
+        </span>
+      </div>`;
+      })() : ''}
     `;
   }
 
@@ -280,15 +357,16 @@ const PredictionsModule = (() => {
         <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:10px">
           ⚙️ 调整预测参数${hasCustom ? ' <span class="custom-w-badge">已自定义</span>' : ''}
         </div>
-        ${sliderHTML('sl-ppg',  '积分权重',   Math.round(w.ppg * 100),         10, 90)}
-        ${sliderHTML('sl-form', '状态权重',   Math.round(w.form * 1000),        1, 50)}
-        ${sliderHTML('sl-hadv', '主场加成 %', Math.round(w.homeAdv * 100),      0, 30)}
-        ${sliderHTML('sl-inj',  '伤情减益 %', Math.round((w.injAdj||0.15)*100), 0, 30)}
+        ${sliderHTML('sl-ppg',  '积分权重',   Math.round(w.ppg  * 100),              0, 100)}
+        ${sliderHTML('sl-form', '状态权重',   Math.round(w.form * 100),              0, 100)}
+        ${sliderHTML('sl-hadv', '主场加成 %', Math.round(w.homeAdv * 100),           0, 100)}
+        ${sliderHTML('sl-inj',  '伤情减益 %', Math.round((w.injAdj  ||0.15)*100),    0, 100)}
+        ${sliderHTML('sl-book', '盘口权重 %', Math.round((w.bookOdds||0.5 )*100),    0, 100)}
         <button onclick="PredictionsModule.resetWeights()" class="pred-reset-btn">↺ 重置此场</button>
       </div>
     `;
 
-    ['sl-ppg','sl-form','sl-hadv','sl-inj'].forEach(id => {
+    ['sl-ppg','sl-form','sl-hadv','sl-inj','sl-book'].forEach(id => {
       document.getElementById(id)?.addEventListener('input', () => onSliderChange(m));
     });
   }
@@ -308,19 +386,22 @@ const PredictionsModule = (() => {
     const formEl = document.getElementById('sl-form');
     const hadvEl = document.getElementById('sl-hadv');
     const injEl  = document.getElementById('sl-inj');
-    if (!ppgEl || !formEl || !hadvEl || !injEl) return;
+    const bookEl = document.getElementById('sl-book');
+    if (!ppgEl || !formEl || !hadvEl || !injEl || !bookEl) return;
 
     matchWeights[m.id] = {
-      ppg:     ppgEl.value  / 100,
-      form:    formEl.value / 1000,
-      homeAdv: hadvEl.value / 100,
-      injAdj:  injEl.value  / 100,
+      ppg:      ppgEl.value  / 100,
+      form:     formEl.value / 100,
+      homeAdv:  hadvEl.value / 100,
+      injAdj:   injEl.value  / 100,
+      bookOdds: bookEl.value / 100,
     };
 
     document.getElementById('sl-ppg-val').textContent  = ppgEl.value;
     document.getElementById('sl-form-val').textContent = formEl.value;
     document.getElementById('sl-hadv-val').textContent = hadvEl.value;
     document.getElementById('sl-inj-val').textContent  = injEl.value;
+    document.getElementById('sl-book-val').textContent = bookEl.value;
 
     // 更新标题中的自定义标记
     const titleEl = document.querySelector('.pred-sliders-box > div');
@@ -698,7 +779,14 @@ const PredictionsModule = (() => {
     const el = document.getElementById('pred-news');
     if (!el) return;
 
-    const news = PL_DATA.matchNews && PL_DATA.matchNews[`${m.homeId}-${m.awayId}`];
+    // 双向查找：先尝试 homeId-awayId，再尝试 awayId-homeId（应对真实赛程主客场与静态数据相反的情况）
+    const fwdKey = `${m.homeId}-${m.awayId}`;
+    const revKey = `${m.awayId}-${m.homeId}`;
+    const db     = PL_DATA.matchNews;
+    let news     = db && db[fwdKey];
+    const flipped = !news && !!(db && db[revKey]);
+    if (!news) news = db && db[revKey];
+
     if (!news || !news.length) {
       el.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:8px 0">暂无赛前新闻</div>';
       return;
@@ -707,17 +795,21 @@ const PredictionsModule = (() => {
     const hTeam = PL_DATA.getTeam(m.homeId);
     const aTeam = PL_DATA.getTeam(m.awayId);
 
+    // 新闻内容中 "home"/"away" 是按撰写时的主客场；若主客场对调则需交换对应球队颜色
+    const newsHome = flipped ? aTeam : hTeam;
+    const newsAway = flipped ? hTeam : aTeam;
+
     const typeIcon = { injury:'🏥', form:'📈', tactical:'🎯', suspension:'🟥', context:'🔥' };
     const impactLabel = { high:'高影响', medium:'中影响', low:'低影响' };
     const impactColor = { high:'var(--red)', medium:'var(--yellow)', low:'var(--text-muted)' };
 
     function affectStyle(affect) {
-      if (affect === 'home') return `color:${hTeam.color};background:${hTeam.color}22`;
-      if (affect === 'away') return `color:${aTeam.color};background:${aTeam.color}22`;
+      if (affect === 'home') return `color:${newsHome.color};background:${newsHome.color}22`;
+      if (affect === 'away') return `color:${newsAway.color};background:${newsAway.color}22`;
       return 'color:var(--text-secondary);background:rgba(255,255,255,0.08)';
     }
     function affectLabel(affect) {
-      return affect === 'home' ? hTeam.short : affect === 'away' ? aTeam.short : '双方';
+      return affect === 'home' ? newsHome.short : affect === 'away' ? newsAway.short : '双方';
     }
 
     el.innerHTML = `<div class="news-grid">${news.map(n => `

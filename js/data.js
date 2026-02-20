@@ -697,6 +697,23 @@ const PL_DATA = {
   },
 
   // ----------------------------------------------------------
+  // Bet365 Odds — GW27 opening lines (decimal odds)
+  // key: "homeId-awayId"
+  // ----------------------------------------------------------
+  matchOdds: {
+    "2-10":  { home: 1.45, draw: 4.50, away: 7.00 },  // Man City vs Newcastle
+    "3-15":  { home: 1.65, draw: 3.80, away: 5.50 },  // Aston Villa vs Leeds
+    "7-14":  { home: 2.30, draw: 3.25, away: 3.10 },  // Brentford vs Brighton
+    "5-19":  { home: 1.35, draw: 5.00, away: 9.00 },  // Chelsea vs Burnley
+    "13-20": { home: 1.85, draw: 3.50, away: 4.50 },  // Crystal Palace vs Wolves
+    "17-6":  { home: 3.20, draw: 3.30, away: 2.30 },  // Nottm Forest vs Liverpool
+    "18-9":  { home: 2.80, draw: 3.20, away: 2.60 },  // West Ham vs Bournemouth
+    "11-12": { home: 2.70, draw: 3.20, away: 2.70 },  // Sunderland vs Fulham
+    "16-1":  { home: 3.50, draw: 3.60, away: 2.05 },  // Tottenham vs Arsenal
+    "8-4":   { home: 2.90, draw: 3.20, away: 2.50 },  // Everton vs Man Utd
+  },
+
+  // ----------------------------------------------------------
   // Helpers
   // ----------------------------------------------------------
   getTeam(id) { return this.teams.find(t => t.id === id); },

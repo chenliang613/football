@@ -51,11 +51,21 @@ const DataService = (() => {
 
   // -------------------------------------------------------
   // 工具：API 球队 TLA → PL_DATA 本地 id
-  // football-data.org 使用 3 字母缩写（tla），与 PL_DATA.teams[].short 一致
+  // football-data.org v4 TLA 与部分球队的惯用缩写不一致，
+  // 在此维护别名映射以防止比赛被误过滤
   // -------------------------------------------------------
+  const TLA_ALIASES = {
+    'NCL':  'NEW',  // Newcastle United (API 使用 NCL，我们用 NEW)
+    'THFC': 'TOT',  // Tottenham Hotspur (备用)
+    'MUFC': 'MUN',  // Manchester United (备用)
+    'NFFC': 'NFO',  // Nottingham Forest (备用)
+    'LUFC': 'LEE',  // Leeds United (备用)
+  };
+
   function localIdByTla(tla) {
     if (!tla) return null;
-    const t = PL_DATA.teams.find(x => x.short === tla);
+    const resolved = TLA_ALIASES[tla] || tla;
+    const t = PL_DATA.teams.find(x => x.short === resolved);
     return t ? t.id : null;
   }
 
