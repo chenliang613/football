@@ -366,7 +366,6 @@ const DataService = (() => {
         return;
       }
       await fetchAll();
-      startAutoRefresh();
     },
   };
 })();

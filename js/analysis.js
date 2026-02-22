@@ -503,10 +503,10 @@ const MATCH_ANALYSIS = {
 
   // ── GW27 Feb 21 ─────────────────────────────────────────────
 
-  // id:20  Man City 2-0 Newcastle  (Feb 21)
+  // id:20  Man City 2-1 Newcastle  (Feb 21)
   20: {
-    xg:         { home: 2.68, away: 0.42 },
-    bigChances: { home: 5, away: 1 },
+    xg:         { home: 2.55, away: 1.18 },
+    bigChances: { home: 5, away: 2 },
     offsides:   { home: 2, away: 3 },
     tackles:    { home: 18, away: 28 },
     events: [
@@ -519,13 +519,14 @@ const MATCH_ANALYSIS = {
       { min: 80, type: 'yellow', team: 'home', player: 'Gündoğan' },
     ],
     ratings: [
-      { player: 'Haaland',  team: 'home', rating: 9.0, highlight: '进球并助攻，主宰禁区' },
+      { player: 'Haaland',  team: 'home', rating: 8.8, highlight: '进球并助攻，主宰禁区' },
       { player: 'B.Silva',  team: 'home', rating: 8.5, highlight: '传出助攻，节奏控制核心' },
       { player: 'Semenyo',  team: 'home', rating: 8.0, highlight: '第二球终结比赛' },
+      { player: 'Isak',     team: 'away', rating: 7.8, highlight: '下半场开局破门扳平，Gordon助攻' },
       { player: 'Dubravka', team: 'away', rating: 7.0, highlight: '多次关键扑救阻止更大分差' },
     ],
-    narrative: '曼城主场展现统治力，哈兰德第23分钟头球破门，塞梅尼约第67分钟反击补刀锁定胜局。纽卡斯尔无Bruno Guimarães镇守中场，几乎无法建立有效进攻，曼城零封对手，与领榜阿森纳积分差缩小至5分。',
-    momentum: [58, 62, 65, 68, 65, 60],
+    narrative: '曼城主场展现统治力，哈兰德第23分钟头球破门率先建功。下半场开局纽卡斯尔奋力还击，伊萨克第48分钟接Gordon直塞破门扳平比分，但好景不长——塞梅尼约第67分钟接哈兰德妙传反击完成终结。纽卡斯尔无Bruno Guimarães镇守中场整体控制力薄弱，但仍凭一球予以还击。曼城三分到手，与领榜阿森纳积分差缩小至2分。',
+    momentum: [58, 62, 52, 60, 65, 60],
   },
 
   // id:21  Aston Villa 2-1 Leeds  (Feb 21)

@@ -25,7 +25,7 @@ const MatchesModule = (() => {
     currentFilter = filter;
     const grid = document.getElementById('matches-grid');
     const list = filter === 'all'
-      ? PL_DATA.matches
+      ? PL_DATA.matches.filter(m => m.status !== 'upcoming')
       : PL_DATA.matches.filter(m => m.status === filter);
 
     // Sort: upcoming first then by date desc
@@ -609,7 +609,7 @@ const MatchesModule = (() => {
   // Init
   // -------------------------------------------------------
   function init() {
-    renderMatches('all');
+    renderMatches('completed');
     initFilters();
   }
 

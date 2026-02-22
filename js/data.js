@@ -41,8 +41,8 @@ const PL_DATA = {
   standings: [
     // Arsenal: 已含 Feb18 (Wolves 2-2 Arsenal, GW27 早赛)，无 Feb21 比赛
     { teamId:1,  played:27, won:17, drawn:7,  lost:3,  gf:52, ga:20, pts:58, form:["D","D","W","W","W"], recent:[11,10,9,6,3,0] },
-    // Man City: Feb21 2-0 Newcastle → WIN
-    { teamId:2,  played:27, won:17, drawn:5,  lost:5,  gf:56, ga:24, pts:56, form:["W","W","W","W","W"], recent:[15,12,9,6,3,0] },
+    // Man City: Feb21 2-1 Newcastle → WIN
+    { teamId:2,  played:27, won:17, drawn:5,  lost:5,  gf:56, ga:25, pts:56, form:["W","W","W","W","W"], recent:[15,12,9,6,3,0] },
     // Aston Villa: Feb21 2-1 Leeds → WIN
     { teamId:3,  played:27, won:16, drawn:5,  lost:6,  gf:39, ga:28, pts:53, form:["W","W","D","W","W"], recent:[11,10,7,6,3,0] },
     // Man Utd: plays Feb23 (未变)
@@ -57,8 +57,8 @@ const PL_DATA = {
     { teamId:8,  played:26, won:10, drawn:7,  lost:9,  gf:29, ga:30, pts:37, form:["L","W","D","W","L"], recent:[8,8,5,4,1,0]   },
     // Bournemouth: Feb21 2-0 West Ham → WIN
     { teamId:9,  played:27, won:10, drawn:10, lost:7,  gf:45, ga:45, pts:40, form:["W","W","D","W","D"], recent:[9,8,7,4,3,0]   },
-    // Newcastle: Feb21 0-2 Man City → LOSS
-    { teamId:10, played:27, won:10, drawn:6,  lost:11, gf:37, ga:39, pts:36, form:["L","W","L","D","W"], recent:[5,4,3,3,0,0]   },
+    // Newcastle: Feb21 1-2 Man City → LOSS
+    { teamId:10, played:27, won:10, drawn:6,  lost:11, gf:38, ga:39, pts:36, form:["L","W","L","D","W"], recent:[5,4,3,3,0,0]   },
     // Sunderland: plays Feb22 (未变)
     { teamId:11, played:26, won:9,  drawn:9,  lost:8,  gf:27, ga:30, pts:36, form:["L","L","D","D","W"], recent:[5,5,4,1,1,0]   },
     // Fulham: plays Feb22 (未变)
@@ -537,19 +537,20 @@ const PL_DATA = {
 
     // ---- GW27 completed (Feb 21, 2026) ----
     {
-      id:20, homeId:2, awayId:10, homeScore:2, awayScore:0, date:"2026-02-21",
+      id:20, homeId:2, awayId:10, homeScore:2, awayScore:1, date:"2026-02-21",
       status:"completed", round:27,
       stats:{
         homePoss:63, awayPoss:37,
-        homeShots:20, awayShots:6,
-        homeShotsOT:8, awayShotsOT:1,
-        homeCorners:10, awayCorners:2,
+        homeShots:18, awayShots:8,
+        homeShotsOT:7, awayShotsOT:3,
+        homeCorners:10, awayCorners:3,
         homeFouls:7,  awayFouls:13,
         homePassAcc:91, awayPassAcc:74,
         homeYellow:1, awayYellow:2, homeRed:0, awayRed:0,
       },
       goals:[
         { min:23, team:"home", scorer:"Haaland",  assist:"B.Silva" },
+        { min:48, team:"away", scorer:"Isak",      assist:"Gordon" },
         { min:67, team:"home", scorer:"Semenyo",  assist:"Haaland" },
       ]
     },
