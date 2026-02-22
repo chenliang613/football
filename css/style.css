@@ -698,8 +698,8 @@ select.filter-select:focus { border-color: var(--accent); }
 }
 
 .prob-label { text-align: center; }
-.prob-label .pct { font-size: 16px; font-weight: 800; color: #fff; display: block; }
-.prob-label .lbl { color: var(--text-muted); }
+.prob-label .pct { font-size: 16px; font-weight: 800; color: #fff; display: block; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+.prob-label .lbl { color: var(--text-secondary); }
 
 .score-prediction {
   background: var(--bg-secondary);
@@ -800,7 +800,7 @@ select.filter-select:focus { border-color: var(--accent); }
   gap: 12px;
 }
 
-.champ-rank { width: 20px; font-size: 12px; font-weight: 700; color: var(--text-muted); text-align: right; }
+.champ-rank { width: 20px; font-size: 12px; font-weight: 700; color: var(--text-secondary); text-align: right; }
 .champ-name { flex: 1; font-size: 13px; font-weight: 700; }
 .champ-pct  { font-size: 14px; font-weight: 800; color: #fff; width: 44px; text-align: right; }
 
@@ -842,7 +842,7 @@ select.filter-select:focus { border-color: var(--accent); }
 
 .danger-info { flex: 1; }
 .danger-name { font-size: 14px; font-weight: 700; }
-.danger-pts  { font-size: 12px; color: var(--text-muted); }
+.danger-pts  { font-size: 12px; color: var(--text-secondary); }
 
 /* ---------- Tooltips / Utilities ---------- */
 .text-green  { color: var(--green) !important; }
@@ -1501,8 +1501,8 @@ select.filter-select:focus { border-color: var(--accent); }
   margin-bottom: 14px;
 }
 .pred-prob-item { text-align: center; }
-.pred-prob-pct  { font-size: 28px; font-weight: 900; line-height: 1; }
-.pred-prob-lbl  { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.pred-prob-pct  { font-size: 28px; font-weight: 900; line-height: 1; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
+.pred-prob-lbl  { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
 
 .pred-prob-bar-wrap {
   display: flex; height: 12px; border-radius: 6px; overflow: hidden;
@@ -1579,7 +1579,7 @@ select.filter-select:focus { border-color: var(--accent); }
   background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden;
 }
 .cmp-val   { text-align: center; }
-.cmp-label { font-size: 10px; font-weight: 400; color: var(--text-muted); }
+.cmp-label { font-size: 10px; font-weight: 400; color: var(--text-secondary); }
 
 /* 近期状态条 */
 .form-strip-row {
@@ -1588,7 +1588,7 @@ select.filter-select:focus { border-color: var(--accent); }
 .form-strip-team { font-size: 12px; font-weight: 800; width: 36px; flex-shrink: 0; }
 
 /* H2H */
-.h2h-total { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+.h2h-total { font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; }
 .h2h-bar-wrap {
   display: flex; height: 10px; border-radius: 5px; overflow: hidden;
   background: var(--bg-secondary); margin-bottom: 6px;
@@ -1619,7 +1619,7 @@ select.filter-select:focus { border-color: var(--accent); }
   font-size: 10px; font-weight: 800; color: #fff;
 }
 .kp-name  { font-size: 12px; font-weight: 600; color: var(--text-primary); }
-.kp-stats { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+.kp-stats { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
 
 /* 伤情 mini */
 .inj-mini {

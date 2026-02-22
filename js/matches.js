@@ -18,6 +18,18 @@ const MatchesModule = (() => {
   function teamShort(id) { return PL_DATA.getTeam(id).short; }
   function teamColor(id) { return PL_DATA.getTeam(id).color; }
 
+  function fmtLocalTime(utcStr) {
+    if (!utcStr) return '';
+    const d = new Date(utcStr);
+    if (isNaN(d)) return '';
+    return d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+
+  function fmtMatchMeta(m) {
+    const t = fmtLocalTime(m.time);
+    return `第${m.round}轮 · ${m.date}${t ? ' · ' + t : ''}`;
+  }
+
   // -------------------------------------------------------
   // Match Cards
   // -------------------------------------------------------
@@ -49,7 +61,7 @@ const MatchesModule = (() => {
         <div class="match-card ${selectedMatch === m.id ? 'selected' : ''}"
              data-match-id="${m.id}" onclick="MatchesModule.selectMatch(${m.id})">
           <div class="match-meta">
-            <span>第${m.round}轮 · ${m.date}</span>
+            <span>${fmtMatchMeta(m)}</span>
             <span class="match-status ${m.status}">${m.status === 'completed' ? '已完成' : '即将进行'}</span>
           </div>
           <div class="match-teams">
@@ -97,8 +109,7 @@ const MatchesModule = (() => {
     // Title
     document.getElementById('detail-title').textContent =
       `${teamName(m.homeId)} ${m.homeScore} – ${m.awayScore} ${teamName(m.awayId)}`;
-    document.getElementById('detail-date').textContent =
-      `第${m.round}轮 · ${m.date}`;
+    document.getElementById('detail-date').textContent = fmtMatchMeta(m);
 
     renderNarrative(m);
     renderHero(m);

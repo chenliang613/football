@@ -4,29 +4,56 @@
 
 const PredictionsModule = (() => {
 
+  // UTC 时间字符串 → 浏览器本地时间（HH:mm）
+  function fmtLocalTime(utcStr) {
+    if (!utcStr) return '';
+    const d = new Date(utcStr);
+    if (isNaN(d)) return '';
+    return d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+
+  function fmtMatchMeta(m) {
+    const t = fmtLocalTime(m.time);
+    return `第${m.round}轮 · ${m.date}${t ? ' · ' + t : ''}`;
+  }
+
+  // 队伍色安全检查：暗色（亮度<0.2）在深色背景上不可读，自动回退白色
+  function safeColor(hex) {
+    if (!hex || !hex.startsWith('#') || hex.length < 7) return '#fff';
+    const r = parseInt(hex.slice(1,3), 16) / 255;
+    const g = parseInt(hex.slice(3,5), 16) / 255;
+    const b = parseInt(hex.slice(5,7), 16) / 255;
+    const lum = 0.2126*r + 0.7152*g + 0.0722*b;
+    return lum > 0.20 ? hex : '#fff';
+  }
+
   let champChart      = null;
   let predRadar       = null;
   let selectedId      = null;   // 当前展开的 match id（可能是静态 id 或 API id）
   let selectedHomeId  = null;   // 主队本地 id（API 刷新后依然有效）
   let selectedAwayId  = null;   // 客队本地 id
 
-  // 默认预测权重 — 基于英超历史数据校准（归一化模型，各维度 0-1）
+  // 默认预测权重 — GW27（8场）回测校准，2026-02-22 更新
   //
-  // ① bookOdds 0.65：博彩市场已融合公开情报，研究表明最优混合比例在 60-70%
-  //    （Constantinou & Fenton 2013；Vlastakis et al. 2009）
+  // GW27 回测结果（8场）：
+  //   正确预测 5/8（62.5%）；3场平局模型均预测为客胜/主胜
+  //   赛季平局率：75.5场/269.5场 ≈ 28.0%（原硬编码 27% 偏低）
+  //   PPG差值>1.0 时必胜（4/4）；差值<0.4 时易平（Brentford-Brighton）
   //
-  // ② ppg 0.45：赛季积分/场是最稳定的实力指标，Dixon-Coles 模型核心变量
-  //    （解释约 60% 的比赛结果方差）
+  // ① bookOdds 0.62（↓ 0.03）：盘口低估主场弱队抵抗力（Forest守平Liverpool、
+  //    Brentford守平Brighton）；略减盘口权重，给模型主场/伤情信号更多空间
   //
-  // ③ form 0.20：近 5 场状态在积分基础上提供约 10-15% 的额外预测信号
-  //    相对 ppg 约 45% 权重，避免过拟合短期波动
+  // ② ppg 0.45（不变）：PPG仍是最强单一指标；差值>1.0时全部正确，保持不变
   //
-  // ④ homeAdv 0.12：英超 2020-2025 主场胜率约 43-44%，略高于中性场地的 37%
-  //    对应主队实力约 +12% 加成，在盘口 65% 覆盖后残余主场信号约 +4%
+  // ③ form 0.22（↑ 0.02）：GW27明确区分了 Bournemouth(WWDWD) vs West Ham(LDWLL)
+  //    及 Man City(WWWWW) vs Newcastle(LWLDW)；小幅上调
   //
-  // ⑤ injAdj 0.20：伤病是模型超越盘口的最大来源（盘口对突发伤病反应存在滞后）
-  //    略高于其他统计权重，作为信息优势窗口
-  const DEFAULT_W = { ppg: 0.45, form: 0.20, homeAdv: 0.12, injAdj: 0.20, bookOdds: 0.65 };
+  // ④ homeAdv 0.15（↑ 0.03）：3支主场弱队至少各取1分（Forest平Liverpool、
+  //    Brentford平Brighton、Wolves平Arsenal）；主场加成低估效应明显
+  //
+  // ⑤ injAdj 0.25（↑ 0.05）：Arsenal伤缺Havertz+Saka被Wolves逼平2-2，是GW27
+  //    最大偏差来源；即将进行的北伦敦德比两人依然缺阵，伤情权重需显著上调
+  const DEFAULT_W = { ppg: 0.45, form: 0.22, homeAdv: 0.15, injAdj: 0.25, bookOdds: 0.62 };
   // 每场比赛独立存储的自定义权重（matchId → { ppg, form, homeAdv }）
   const matchWeights = {};
 
@@ -93,7 +120,7 @@ const PredictionsModule = (() => {
     aStr *= (1 - aInjLoss * (w.injAdj || 0));
 
     const base = hStr + aStr;
-    let draw    = 0.27;
+    let draw    = 0.28;  // GW27校准：赛季平局率 75.5/269.5 ≈ 28%（原27%偏低）
     let homeWin = (hStr / base) * (1 - draw);
     let awayWin = (aStr / base) * (1 - draw);
 
@@ -178,7 +205,7 @@ const PredictionsModule = (() => {
     const grid = document.getElementById('predictions-grid');
 
     if (!shown.length) {
-      grid.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px 20px">暂无即将到来的赛事</div>';
+      grid.innerHTML = '<div style="color:var(--text-secondary);text-align:center;padding:40px 20px">暂无即将到来的赛事</div>';
       return;
     }
 
@@ -189,8 +216,8 @@ const PredictionsModule = (() => {
       const hasCustom = !!matchWeights[m.id];
 
       let favText = '势均力敌', favColor = 'var(--yellow)';
-      if (pred.homeWin > pred.awayWin + 10) { favText = `${hTeam.short} 主场优势`; favColor = hTeam.color; }
-      else if (pred.awayWin > pred.homeWin + 10) { favText = `${aTeam.short} 客场强队`; favColor = aTeam.color; }
+      if (pred.homeWin > pred.awayWin + 10) { favText = `${hTeam.short} 主场优势`; favColor = 'var(--green)'; }
+      else if (pred.awayWin > pred.homeWin + 10) { favText = `${aTeam.short} 客场强队`; favColor = 'var(--accent2)'; }
 
       const isSelected = selectedId === m.id;
 
@@ -199,23 +226,23 @@ const PredictionsModule = (() => {
              data-mid="${m.id}"
              onclick="PredictionsModule.selectMatch(${m.id})">
           <div class="pred-card-header">
-            <span style="font-size:11px;color:var(--text-muted)">第${m.round}轮 · ${m.date}${hasCustom ? ' <span class="custom-w-badge">自定义</span>' : ''}</span>
+            <span style="font-size:11px;color:var(--text-secondary)">${fmtMatchMeta(m)}${hasCustom ? ' <span class="custom-w-badge">自定义</span>' : ''}</span>
             <span style="font-size:11px;font-weight:700;color:${favColor}">${favText}</span>
           </div>
           <div class="prediction-teams">
             <div class="prediction-team">
               <div class="pred-badge" style="background:${hTeam.color}">${hTeam.short}</div>
               <div class="prediction-team-name">${hTeam.name}</div>
-              <div style="font-size:10px;color:var(--text-muted)">主场</div>
+              <div style="font-size:10px;color:var(--text-secondary)">主场</div>
             </div>
             <div class="prediction-vs">
-              <div style="font-size:18px;font-weight:800;color:var(--text-muted)">VS</div>
+              <div style="font-size:18px;font-weight:800;color:var(--text-secondary)">VS</div>
               <div style="font-size:11px;color:var(--accent);margin-top:4px">${pred.hGoals} – ${pred.aGoals}</div>
             </div>
             <div class="prediction-team">
               <div class="pred-badge" style="background:${aTeam.color}">${aTeam.short}</div>
               <div class="prediction-team-name">${aTeam.name}</div>
-              <div style="font-size:10px;color:var(--text-muted)">客场</div>
+              <div style="font-size:10px;color:var(--text-secondary)">客场</div>
             </div>
           </div>
           <div class="prob-bars mt-12">
@@ -228,7 +255,7 @@ const PredictionsModule = (() => {
             <div class="prob-label"><span class="pct text-yellow">${pred.draw}%</span><span class="lbl">平局</span></div>
             <div class="prob-label"><span class="pct text-red">${pred.awayWin}%</span><span class="lbl">客胜</span></div>
           </div>
-          <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-muted)">
+          <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-secondary)">
             点击查看深度分析 ↓
           </div>
         </div>
@@ -257,7 +284,7 @@ const PredictionsModule = (() => {
     document.getElementById('pred-detail-title').textContent =
       `${hTeam.name}  vs  ${aTeam.name}`;
     document.getElementById('pred-detail-meta').textContent =
-      `第${m.round}轮 · ${m.date} · 主场：${hTeam.name}`;
+      `${fmtMatchMeta(m)} · 主场：${hTeam.name}`;
 
     const pred = predictFull(m.homeId, m.awayId, getW(m.id));
     renderProbDisplay(m, pred);
@@ -292,16 +319,16 @@ const PredictionsModule = (() => {
     el.innerHTML = `
       <div class="pred-prob-numbers">
         <div class="pred-prob-item">
-          <div class="pred-prob-pct" style="color:${hTeam.color}" id="prob-home">${pred.homeWin}%</div>
-          <div class="pred-prob-lbl">${hTeam.short} 主胜</div>
+          <div class="pred-prob-pct" style="color:#00e676" id="prob-home">${pred.homeWin}%</div>
+          <div class="pred-prob-lbl"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${hTeam.color};border:1px solid rgba(255,255,255,0.3);margin-right:4px;vertical-align:middle"></span>${hTeam.short} 主胜</div>
         </div>
         <div class="pred-prob-item">
-          <div class="pred-prob-pct" style="color:var(--yellow)" id="prob-draw">${pred.draw}%</div>
+          <div class="pred-prob-pct" style="color:#ffd600" id="prob-draw">${pred.draw}%</div>
           <div class="pred-prob-lbl">平局</div>
         </div>
         <div class="pred-prob-item">
-          <div class="pred-prob-pct" style="color:${aTeam.color}" id="prob-away">${pred.awayWin}%</div>
-          <div class="pred-prob-lbl">${aTeam.short} 客胜</div>
+          <div class="pred-prob-pct" style="color:#ff6b6b" id="prob-away">${pred.awayWin}%</div>
+          <div class="pred-prob-lbl"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${aTeam.color};border:1px solid rgba(255,255,255,0.3);margin-right:4px;vertical-align:middle"></span>${aTeam.short} 客胜</div>
         </div>
       </div>
       <div class="pred-prob-bar-wrap">
@@ -315,9 +342,9 @@ const PredictionsModule = (() => {
              style="width:${pred.awayWin}%;background:${aTeam.color}cc"
              title="${aTeam.name} 客胜 ${pred.awayWin}%"></div>
       </div>
-      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:4px">
-        <span style="color:${hTeam.color}">预测进球 ${pred.hGoals}</span>
-        <span style="color:${aTeam.color}">预测进球 ${pred.aGoals}</span>
+      <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:#c8d0e8;margin-top:6px">
+        <span>⚽ 预测进球 <strong style="color:#fff;font-size:13px">${pred.hGoals}</strong></span>
+        <span><strong style="color:#fff;font-size:13px">${pred.aGoals}</strong> 预测进球 ⚽</span>
       </div>
       ${pred.odds ? (() => {
         const iH = +(100 / pred.odds.home).toFixed(1);
@@ -327,7 +354,7 @@ const PredictionsModule = (() => {
       <div class="odds-ref">
         <span class="odds-ref-label">📊 bet365</span>
         <span class="odds-cell">
-          <span class="odds-val" style="color:${hTeam.color}">${pred.odds.home}</span>
+          <span class="odds-val" style="color:#00e676">${pred.odds.home}</span>
           <span class="odds-implied">${iH}%</span>
           <span class="odds-lbl">主胜</span>
         </span>
@@ -339,7 +366,7 @@ const PredictionsModule = (() => {
         </span>
         <span class="odds-sep">·</span>
         <span class="odds-cell">
-          <span class="odds-val" style="color:${aTeam.color}">${pred.odds.away}</span>
+          <span class="odds-val" style="color:#ff6b6b">${pred.odds.away}</span>
           <span class="odds-implied">${iA}%</span>
           <span class="odds-lbl">客胜</span>
         </span>
@@ -369,7 +396,7 @@ const PredictionsModule = (() => {
     const hasCustom = !!matchWeights[m.id];
     el.innerHTML = `
       <div class="pred-sliders-box">
-        <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:10px">
+        <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:10px">
           ⚙️ 调整预测参数${hasCustom ? ' <span class="custom-w-badge">已自定义</span>' : ''}
         </div>
         ${sliderHTML('sl-ppg',  '积分权重',   Math.round(w.ppg  * 100),              0, 100)}
@@ -458,9 +485,9 @@ const PredictionsModule = (() => {
           return `
             <div class="score-dist-row ${cls}">
               <div class="score-dist-score">
-                <span style="color:${hTeam.color}">${s.h}</span>
-                <span style="color:var(--text-muted)"> – </span>
-                <span style="color:${aTeam.color}">${s.a}</span>
+                <span style="color:${safeColor(hTeam.color)}">${s.h}</span>
+                <span style="color:var(--text-secondary)"> – </span>
+                <span style="color:${safeColor(aTeam.color)}">${s.a}</span>
               </div>
               <div class="score-dist-bar-wrap">
                 <div class="score-dist-bar" style="width:${bar}%;background:${i===0?'var(--accent)':'rgba(255,255,255,0.15)'}"></div>
@@ -470,7 +497,7 @@ const PredictionsModule = (() => {
           `;
         }).join('')}
       </div>
-      <div style="font-size:10px;color:var(--text-muted);margin-top:8px;text-align:right">
+      <div style="font-size:10px;color:var(--text-secondary);margin-top:8px;text-align:right">
         基于 λ=${pred.hGoals} / ${pred.aGoals} 的泊松分布
       </div>
     `;
@@ -488,7 +515,7 @@ const PredictionsModule = (() => {
     const aF = PL_DATA.teamForm[m.awayId];
     const hTeam = PL_DATA.getTeam(m.homeId);
     const aTeam = PL_DATA.getTeam(m.awayId);
-    if (!hS || !aS) { el.innerHTML = '<div style="color:var(--text-muted)">暂无数据</div>'; return; }
+    if (!hS || !aS) { el.innerHTML = '<div style="color:var(--text-secondary)">暂无数据</div>'; return; }
 
     const hPPG  = +(hS.pts / hS.played).toFixed(2);
     const aPPG  = +(aS.pts / aS.played).toFixed(2);
@@ -512,8 +539,8 @@ const PredictionsModule = (() => {
 
     el.innerHTML = `
       <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:11px;font-weight:700">
-        <span style="color:${hTeam.color}">${hTeam.short}</span>
-        <span style="color:${aTeam.color}">${aTeam.short}</span>
+        <span style="color:${safeColor(hTeam.color)}">${hTeam.short}</span>
+        <span style="color:${safeColor(aTeam.color)}">${aTeam.short}</span>
       </div>
     ` + rows.map(r => {
       const total = r.hv + r.av || 1;
@@ -527,12 +554,12 @@ const PredictionsModule = (() => {
       const aBetter = r.invert ? r.av <= r.hv : r.av >= r.hv;
       return `
         <div class="cmp-row">
-          <div class="cmp-val" style="color:${hBetter ? hTeam.color : 'var(--text-secondary)'}">${r.fmt(r.hv)}</div>
+          <div class="cmp-val" style="color:${hBetter ? safeColor(hTeam.color) : 'var(--text-secondary)'}">${r.fmt(r.hv)}</div>
           <div class="cmp-bars">
             <div style="width:${hPct}%;background:${hTeam.color}99;height:100%;border-radius:2px 0 0 2px;margin-left:auto"></div>
             <div style="width:${aPct}%;background:${aTeam.color}99;height:100%;border-radius:0 2px 2px 0"></div>
           </div>
-          <div class="cmp-val" style="color:${aBetter ? aTeam.color : 'var(--text-secondary)'}">${r.fmt(r.av)}</div>
+          <div class="cmp-val" style="color:${aBetter ? safeColor(aTeam.color) : 'var(--text-secondary)'}">${r.fmt(r.av)}</div>
           <div class="cmp-label">${r.label}</div>
         </div>
       `;
@@ -632,9 +659,9 @@ const PredictionsModule = (() => {
       const pts = s.form.slice(0,5).reduce((a,r) => a + (r==='W'?3:r==='D'?1:0), 0);
       return `
         <div class="form-strip-row">
-          <div class="form-strip-team" style="color:${team.color}">${team.short}</div>
+          <div class="form-strip-team" style="color:${safeColor(team.color)}">${team.short}</div>
           <div class="form-badges" style="gap:4px">${badges}</div>
-          <div style="font-size:11px;color:var(--text-muted)">${pts}分 / 5场</div>
+          <div style="font-size:11px;color:var(--text-secondary)">${pts}分 / 5场</div>
         </div>
       `;
     }
@@ -642,7 +669,7 @@ const PredictionsModule = (() => {
     el.innerHTML = `
       <div style="margin-bottom:12px">${strip(hS, hTeam)}</div>
       <div>${strip(aS, aTeam)}</div>
-      <div style="margin-top:14px;font-size:11px;color:var(--text-muted)">积分榜位置</div>
+      <div style="margin-top:14px;font-size:11px;color:var(--text-secondary)">积分榜位置</div>
       <div style="margin-top:6px">
         ${rankBadge(m.homeId, hTeam)}
         ${rankBadge(m.awayId, aTeam)}
@@ -655,8 +682,8 @@ const PredictionsModule = (() => {
     const s    = PL_DATA.getStanding(teamId);
     return `
       <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
-        <span style="width:24px;text-align:center;font-weight:800;color:var(--text-muted)">#${rank}</span>
-        <span style="color:${team.color};font-weight:700">${team.name}</span>
+        <span style="width:24px;text-align:center;font-weight:800;color:var(--text-secondary)">#${rank}</span>
+        <span style="color:${safeColor(team.color)};font-weight:700">${team.name}</span>
         <span style="margin-left:auto;font-size:12px;color:var(--text-secondary)">${s ? s.pts + '分' : '—'}</span>
       </div>
     `;
@@ -673,7 +700,7 @@ const PredictionsModule = (() => {
     const aTeam = PL_DATA.getTeam(m.awayId);
 
     if (!h2h) {
-      el.innerHTML = '<div style="color:var(--text-muted);font-size:12px">暂无历史交锋数据</div>';
+      el.innerHTML = '<div style="color:var(--text-secondary);font-size:12px">暂无历史交锋数据</div>';
       return;
     }
 
@@ -692,20 +719,20 @@ const PredictionsModule = (() => {
         <div style="width:${aPct}%;background:${aTeam.color}cc"></div>
       </div>
       <div class="h2h-labels">
-        <span style="color:${hTeam.color}">${h2h.homeWins}胜 (${hPct}%)</span>
+        <span style="color:${safeColor(hTeam.color)}">${h2h.homeWins}胜 (${hPct}%)</span>
         <span style="color:var(--yellow)">${h2h.draws}平</span>
-        <span style="color:${aTeam.color}">${h2h.awayWins}胜 (${aPct}%)</span>
+        <span style="color:${safeColor(aTeam.color)}">${h2h.awayWins}胜 (${aPct}%)</span>
       </div>
       <div class="h2h-goals">
         <div class="h2h-goal-item">
-          <span style="color:${hTeam.color};font-size:20px;font-weight:800">${h2h.homeGoals}</span>
-          <span style="font-size:10px;color:var(--text-muted)">${hTeam.short} 总进球</span>
+          <span style="color:${safeColor(hTeam.color)};font-size:20px;font-weight:800">${h2h.homeGoals}</span>
+          <span style="font-size:10px;color:var(--text-secondary)">${hTeam.short} 总进球</span>
           <span style="font-size:11px;color:var(--text-secondary)">场均 ${hGPG}</span>
         </div>
-        <div style="font-size:18px;color:var(--text-muted)">:</div>
+        <div style="font-size:18px;color:var(--text-secondary)">:</div>
         <div class="h2h-goal-item">
-          <span style="color:${aTeam.color};font-size:20px;font-weight:800">${h2h.awayGoals}</span>
-          <span style="font-size:10px;color:var(--text-muted)">${aTeam.short} 总进球</span>
+          <span style="color:${safeColor(aTeam.color)};font-size:20px;font-weight:800">${h2h.awayGoals}</span>
+          <span style="font-size:10px;color:var(--text-secondary)">${aTeam.short} 总进球</span>
           <span style="font-size:11px;color:var(--text-secondary)">场均 ${aGPG}</span>
         </div>
       </div>
@@ -736,15 +763,15 @@ const PredictionsModule = (() => {
       `;
     }
 
-    const noPlayer = `<div style="color:var(--text-muted);font-size:11px;padding:8px 0">暂无数据</div>`;
+    const noPlayer = `<div style="color:var(--text-secondary);font-size:11px;padding:8px 0">暂无数据</div>`;
 
     el.innerHTML = `
       <div class="kp-section">
-        <div style="font-size:10px;font-weight:700;color:${hTeam.color};margin-bottom:6px">${hTeam.name}</div>
+        <div style="font-size:10px;font-weight:700;color:${safeColor(hTeam.color)};margin-bottom:6px">${hTeam.name}</div>
         ${hPlayers.length ? hPlayers.map(p => playerCard(p, hTeam)).join('') : noPlayer}
       </div>
       <div class="kp-section" style="margin-top:10px">
-        <div style="font-size:10px;font-weight:700;color:${aTeam.color};margin-bottom:6px">${aTeam.name}</div>
+        <div style="font-size:10px;font-weight:700;color:${safeColor(aTeam.color)};margin-bottom:6px">${aTeam.name}</div>
         ${aPlayers.length ? aPlayers.map(p => playerCard(p, aTeam)).join('') : noPlayer}
       </div>
     `;
@@ -770,8 +797,8 @@ const PredictionsModule = (() => {
           <span class="inj-badge ${cls}">${inj.status}</span>
           <div class="inj-mini-info">
             <div style="font-size:12px;font-weight:600;color:var(--text-primary)">${icon} ${inj.name}</div>
-            <div style="font-size:10px;color:var(--text-muted)">${inj.pos} · ${inj.injury}</div>
-            <div style="font-size:10px;color:var(--text-muted)">预计复出：${inj.returnEst}</div>
+            <div style="font-size:10px;color:var(--text-secondary)">${inj.pos} · ${inj.injury}</div>
+            <div style="font-size:10px;color:var(--text-secondary)">预计复出：${inj.returnEst}</div>
           </div>
         </div>
       `;
@@ -780,9 +807,9 @@ const PredictionsModule = (() => {
     const none = `<div style="color:var(--green);font-size:11px;padding:6px 0">✅ 全员可用</div>`;
 
     el.innerHTML = `
-      <div style="font-size:10px;font-weight:700;color:${hTeam.color};margin-bottom:6px">${hTeam.name}</div>
+      <div style="font-size:10px;font-weight:700;color:${safeColor(hTeam.color)};margin-bottom:6px">${hTeam.name}</div>
       ${hInj.length ? hInj.map(i => injCard(i, hTeam)).join('') : none}
-      <div style="font-size:10px;font-weight:700;color:${aTeam.color};margin-top:10px;margin-bottom:6px">${aTeam.name}</div>
+      <div style="font-size:10px;font-weight:700;color:${safeColor(aTeam.color)};margin-top:10px;margin-bottom:6px">${aTeam.name}</div>
       ${aInj.length ? aInj.map(i => injCard(i, aTeam)).join('') : none}
     `;
   }
@@ -803,7 +830,7 @@ const PredictionsModule = (() => {
     if (!news) news = db && db[revKey];
 
     if (!news || !news.length) {
-      el.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:8px 0">暂无赛前新闻</div>';
+      el.innerHTML = '<div style="color:var(--text-secondary);font-size:12px;padding:8px 0">暂无赛前新闻</div>';
       return;
     }
 
@@ -991,13 +1018,13 @@ const PredictionsModule = (() => {
           <div class="danger-index ${cls}">${dangerPct}</div>
           <div class="danger-info">
             <div class="danger-name">
-              ${emoji} <span style="color:${team.color}">${team.name}</span>
-              <span style="font-size:11px;color:var(--text-muted);margin-left:8px">#${rank}</span>
+              ${emoji} <span style="color:${safeColor(team.color)}">${team.name}</span>
+              <span style="font-size:11px;color:var(--text-secondary);margin-left:8px">#${rank}</span>
             </div>
             <div class="danger-pts">${s.pts}分 · 距安全区 ${Math.max(safe17pts - s.pts, 0)} 分</div>
           </div>
           <div style="text-align:right">
-            <div style="font-size:10px;color:var(--text-muted)">近期状态</div>
+            <div style="font-size:10px;color:var(--text-secondary)">近期状态</div>
             <div style="font-size:14px;font-weight:700;color:${fs>=6?'var(--green)':'var(--red)'}">${fs.toFixed(1)}</div>
           </div>
         </div>

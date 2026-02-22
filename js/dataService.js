@@ -209,6 +209,7 @@ const DataService = (() => {
         homeScore: done ? (m.score.fullTime.home ?? null) : null,
         awayScore: done ? (m.score.fullTime.away ?? null) : null,
         date:      m.utcDate.slice(0, 10),
+        time:      m.utcDate,
         status:    done ? 'completed' : 'upcoming',
         round:     m.matchday,
         stats:     existing?.stats  ?? null,
