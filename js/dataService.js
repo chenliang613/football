@@ -198,8 +198,12 @@ const DataService = (() => {
         x => x.homeId === homeLocal && x.awayId === awayLocal && x.round === m.matchday
       );
 
+      // 只处理静态数据中存在的比赛：避免 API 返回的 GW1-GW24 历史场次
+      // 填满列表却没有任何分析数据可展示
+      if (!existing) return null;
+
       return {
-        id:        m.id,
+        id:        existing.id,  // 始终使用本地静态 ID，确保 MATCH_ANALYSIS 能正确查询
         homeId:    homeLocal,
         awayId:    awayLocal,
         homeScore: done ? (m.score.fullTime.home ?? null) : null,

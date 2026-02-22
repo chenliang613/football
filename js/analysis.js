@@ -501,6 +501,178 @@ const MATCH_ANALYSIS = {
     momentum: [48, 52, 48, 52, 50, 48],
   },
 
+  // ── GW27 Feb 21 ─────────────────────────────────────────────
+
+  // id:20  Man City 2-0 Newcastle  (Feb 21)
+  20: {
+    xg:         { home: 2.68, away: 0.42 },
+    bigChances: { home: 5, away: 1 },
+    offsides:   { home: 2, away: 3 },
+    tackles:    { home: 18, away: 28 },
+    events: [
+      { min: 38, type: 'yellow', team: 'away', player: 'Tonali' },
+      { min: 55, type: 'sub',    team: 'away', playerOff: 'Murphy',    playerOn: 'Almiron' },
+      { min: 60, type: 'yellow', team: 'away', player: 'Almiron' },
+      { min: 68, type: 'sub',    team: 'home', playerOff: 'De Bruyne', playerOn: 'Kovacic' },
+      { min: 75, type: 'sub',    team: 'away', playerOff: 'Isak',      playerOn: 'Osula' },
+      { min: 78, type: 'sub',    team: 'home', playerOff: 'Semenyo',   playerOn: 'Doku' },
+      { min: 80, type: 'yellow', team: 'home', player: 'Gündoğan' },
+    ],
+    ratings: [
+      { player: 'Haaland',  team: 'home', rating: 9.0, highlight: '进球并助攻，主宰禁区' },
+      { player: 'B.Silva',  team: 'home', rating: 8.5, highlight: '传出助攻，节奏控制核心' },
+      { player: 'Semenyo',  team: 'home', rating: 8.0, highlight: '第二球终结比赛' },
+      { player: 'Dubravka', team: 'away', rating: 7.0, highlight: '多次关键扑救阻止更大分差' },
+    ],
+    narrative: '曼城主场展现统治力，哈兰德第23分钟头球破门，塞梅尼约第67分钟反击补刀锁定胜局。纽卡斯尔无Bruno Guimarães镇守中场，几乎无法建立有效进攻，曼城零封对手，与领榜阿森纳积分差缩小至5分。',
+    momentum: [58, 62, 65, 68, 65, 60],
+  },
+
+  // id:21  Aston Villa 2-1 Leeds  (Feb 21)
+  21: {
+    xg:         { home: 1.78, away: 0.88 },
+    bigChances: { home: 3, away: 1 },
+    offsides:   { home: 1, away: 3 },
+    tackles:    { home: 20, away: 26 },
+    events: [
+      { min: 42, type: 'yellow', team: 'away', player: 'Byram' },
+      { min: 50, type: 'yellow', team: 'home', player: 'Tielemans' },
+      { min: 62, type: 'sub',    team: 'away', playerOff: 'Piroe',    playerOn: 'Gnonto' },
+      { min: 70, type: 'sub',    team: 'home', playerOff: 'Diaby',    playerOn: 'Ramsey' },
+      { min: 78, type: 'yellow', team: 'away', player: 'Struijk' },
+      { min: 82, type: 'sub',    team: 'away', playerOff: 'Gnonto',   playerOn: 'Okafor' },
+    ],
+    ratings: [
+      { player: 'Watkins',       team: 'home', rating: 8.5, highlight: '进球，持续冲击禁区' },
+      { player: 'Tielemans',     team: 'home', rating: 8.0, highlight: '制胜进球，中场组织核心' },
+      { player: 'Calvert-Lewin', team: 'away', rating: 7.8, highlight: '扳平一球，带动进攻' },
+      { player: 'Diaby',         team: 'home', rating: 7.5, highlight: '传出助攻，左路威胁' },
+    ],
+    narrative: '维拉主场凭借效率取得三分，沃特金斯头球率先破门，利兹卡尔弗特-卢因禁区抢点扳平，但蒂勒曼斯远射一锤定音。利兹尽力反扑终究功亏一篑，维拉牢牢守住欧冠席位。',
+    momentum: [52, 55, 52, 55, 58, 55],
+  },
+
+  // id:22  Brentford 1-1 Brighton  (Feb 21)
+  22: {
+    xg:         { home: 1.12, away: 1.34 },
+    bigChances: { home: 2, away: 2 },
+    offsides:   { home: 2, away: 1 },
+    tackles:    { home: 24, away: 22 },
+    events: [
+      { min: 35, type: 'yellow', team: 'home', player: 'Pinnock' },
+      { min: 52, type: 'yellow', team: 'away', player: 'Estupinan' },
+      { min: 62, type: 'sub',    team: 'away', playerOff: 'Mitoma',    playerOn: 'Rutter' },
+      { min: 68, type: 'yellow', team: 'home', player: 'Janelt' },
+      { min: 72, type: 'sub',    team: 'home', playerOff: 'Mbeumo',    playerOn: 'Wissa' },
+      { min: 78, type: 'sub',    team: 'away', playerOff: 'Welbeck',   playerOn: 'Ferguson' },
+    ],
+    ratings: [
+      { player: 'Igor Thiago',   team: 'home', rating: 8.0, highlight: '半场进球，持续冲击禁区' },
+      { player: 'João Pedro(B)', team: 'away', rating: 7.8, highlight: '扳平进球，持续威胁' },
+      { player: 'Lewis-Potter',  team: 'home', rating: 7.5, highlight: '传出助攻，右路活跃' },
+      { player: 'Flekken',       team: 'away', rating: 7.5, highlight: '关键时刻扑救' },
+    ],
+    narrative: '主客双方激烈拼杀后战成1-1。布伦特福德伊戈尔-蒂亚戈补时破门率先领先，布莱顿若昂-佩德罗下半场扳平，双方各取一分。战术对抗激烈，双方机会转化率均偏低。',
+    momentum: [52, 55, 48, 52, 48, 50],
+  },
+
+  // id:23  Chelsea 2-0 Burnley  (Feb 21)
+  23: {
+    xg:         { home: 2.84, away: 0.28 },
+    bigChances: { home: 5, away: 0 },
+    offsides:   { home: 2, away: 1 },
+    tackles:    { home: 14, away: 32 },
+    events: [
+      { min: 28, type: 'yellow', team: 'away', player: 'Brownhill' },
+      { min: 45, type: 'yellow', team: 'away', player: 'Cullen' },
+      { min: 55, type: 'sub',    team: 'away', playerOff: 'Rodriguez', playerOn: 'Benson' },
+      { min: 62, type: 'yellow', team: 'away', player: 'McNeil' },
+      { min: 65, type: 'sub',    team: 'home', playerOff: 'Jackson',   playerOn: 'Nkunku' },
+      { min: 78, type: 'sub',    team: 'home', playerOff: 'Palmer',    playerOn: 'Mudryk' },
+    ],
+    ratings: [
+      { player: 'Palmer',     team: 'home', rating: 9.0, highlight: '进球+助攻，斯坦福桥统治全场' },
+      { player: 'Joao Pedro', team: 'home', rating: 8.5, highlight: '精准跑位破门，锁定胜局' },
+      { player: 'Jackson',    team: 'home', rating: 7.8, highlight: '持续参与进攻，制造压力' },
+      { player: 'Muric',      team: 'away', rating: 7.0, highlight: '多次扑救阻止更大失分' },
+    ],
+    narrative: '切尔西主场轻取降级区伯恩利，帕尔默第38分钟传出助攻，若昂-佩德罗第74分钟精准破门锁定胜局。伯恩利完全陷入防守，出现3张黄牌，降级形势持续恶化，与安全区差距进一步拉大。',
+    momentum: [60, 62, 65, 68, 62, 60],
+  },
+
+  // id:24  Crystal Palace 2-1 Wolves  (Feb 21)
+  24: {
+    xg:         { home: 1.94, away: 0.82 },
+    bigChances: { home: 3, away: 1 },
+    offsides:   { home: 1, away: 2 },
+    tackles:    { home: 18, away: 28 },
+    events: [
+      { min: 42, type: 'yellow', team: 'away', player: 'Cunha' },
+      { min: 52, type: 'yellow', team: 'home', player: 'Ward' },
+      { min: 60, type: 'sub',    team: 'away', playerOff: 'Hwang',     playerOn: 'Strand Larsen' },
+      { min: 68, type: 'yellow', team: 'away', player: 'Semedo' },
+      { min: 72, type: 'sub',    team: 'home', playerOff: 'Mateta',    playerOn: 'Edouard' },
+      { min: 78, type: 'sub',    team: 'away', playerOff: 'Sarabia',   playerOn: 'Fraser' },
+    ],
+    ratings: [
+      { player: 'Mateta', team: 'home', rating: 8.5, highlight: '开场进球并创造第二球机会' },
+      { player: 'Olise',  team: 'home', rating: 8.5, highlight: '制胜进球，右路爆发力惊人' },
+      { player: 'Cunha',  team: 'away', rating: 7.5, highlight: '扳平，为降级区球队独力撑场' },
+      { player: 'Eze',    team: 'home', rating: 7.5, highlight: '助攻首球，中场组织核心' },
+    ],
+    narrative: '马泰塔头球率先破门，坎哈射门追平，但奥利塞第82分钟奉献制胜一击。狼队积分仍垫底，与安全区差距拉大，降级形势几近绝望。水晶宫完成保级自救，远离危险区域。',
+    momentum: [55, 58, 50, 48, 45, 45],
+  },
+
+  // id:25  Nottm Forest 1-1 Liverpool  (Feb 21)
+  25: {
+    xg:         { home: 0.82, away: 1.58 },
+    bigChances: { home: 1, away: 2 },
+    offsides:   { home: 1, away: 3 },
+    tackles:    { home: 28, away: 18 },
+    events: [
+      { min: 32, type: 'yellow', team: 'home', player: 'Gibbs-White' },
+      { min: 55, type: 'sub',    team: 'away', playerOff: 'Diaz',       playerOn: 'Salah' },
+      { min: 60, type: 'yellow', team: 'home', player: 'Anderson' },
+      { min: 68, type: 'sub',    team: 'home', playerOff: 'Awoniyi',    playerOn: 'Wood' },
+      { min: 72, type: 'yellow', team: 'away', player: 'Gravenberch' },
+      { min: 80, type: 'sub',    team: 'away', playerOff: 'Szoboszlai', playerOn: 'Jones' },
+    ],
+    ratings: [
+      { player: 'Gibbs-White', team: 'home', rating: 8.5, highlight: '进球，中场发动机，组织防守兼顾' },
+      { player: 'Ekitike',     team: 'away', rating: 8.0, highlight: '替补后即刻补时扳平，嗅觉极准' },
+      { player: 'Turner',      team: 'home', rating: 7.8, highlight: '多次关键扑救阻止利物浦' },
+      { player: 'Hudson-Odoi', team: 'home', rating: 7.5, highlight: '传出助攻，右路持续威胁' },
+    ],
+    narrative: '诺森汉姆森林主场凭借严密防守率先破门，吉布斯-怀特第37分钟精准射门，利物浦持续压迫下埃基蒂克第88分钟补时追平。两队各取一分，利物浦第四名争夺持续告急，近期状态令人担忧。',
+    momentum: [42, 40, 42, 45, 48, 44],
+  },
+
+  // id:26  West Ham 0-2 Bournemouth  (Feb 21)
+  26: {
+    xg:         { home: 0.68, away: 1.84 },
+    bigChances: { home: 1, away: 3 },
+    offsides:   { home: 2, away: 1 },
+    tackles:    { home: 26, away: 20 },
+    events: [
+      { min: 32, type: 'yellow', team: 'home', player: 'Bowen' },
+      { min: 55, type: 'yellow', team: 'away', player: 'Christie' },
+      { min: 62, type: 'sub',    team: 'home', playerOff: 'Paquetá',   playerOn: 'Ward-Prowse' },
+      { min: 65, type: 'sub',    team: 'away', playerOff: 'Cook',      playerOn: 'Zemura' },
+      { min: 72, type: 'yellow', team: 'home', player: 'Emerson' },
+      { min: 78, type: 'sub',    team: 'away', playerOff: 'Kluivert',  playerOn: 'Ouattara' },
+      { min: 82, type: 'sub',    team: 'home', playerOff: 'Bowen',     playerOn: 'Coufal' },
+    ],
+    ratings: [
+      { player: 'Kluivert',  team: 'away', rating: 8.5, highlight: '进球，全场最活跃进攻球员' },
+      { player: 'Ouattara',  team: 'away', rating: 8.0, highlight: '替补后即刻制胜，左路突破无法阻挡' },
+      { player: 'Christie',  team: 'away', rating: 7.5, highlight: '传出助攻，防守积极参与' },
+      { player: 'Fabianski', team: 'home', rating: 7.0, highlight: '多次扑救减少失分' },
+    ],
+    narrative: '西汉姆主场保级战再度失利，伯恩茅斯克鲁弗特第52分钟打破僵局，替补乌亚塔拉第79分钟扩大优势。西汉姆整场进攻乏力，仅制造1次大好机会，降级危机持续加深，落后安全区已达3分。',
+    momentum: [45, 42, 38, 40, 38, 36],
+  },
+
   // ── GW27 早开赛 ──────────────────────────────────────────────
 
   // id:30  Wolves 2-2 Arsenal  (Feb 18, GW27 早赛)

@@ -32,7 +32,8 @@
       "WebFetch(domain:www.sofascore.com)",
       "WebFetch(domain:www.fotmob.com)",
       "Bash(wc:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(node -e:*)"
     ]
   }
 }

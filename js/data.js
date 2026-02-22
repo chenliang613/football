@@ -1,7 +1,7 @@
 // ============================================================
 // data.js — Premier League 2025/26 Real Data
-// Last updated: GW26 completed + Wolves 2-2 Arsenal Feb 18 (GW27 early fixture)
-// Arsenal/Wolves played 27 games; remaining 18 clubs at GW26
+// Last updated: GW27 Feb 21 (7 matches completed) + Wolves 2-2 Arsenal Feb 18
+// GW27 Feb 22-23 (3 matches) still upcoming
 // Sources: Premier League official, BBC Sport, Sky Sports, ESPN
 // ============================================================
 
@@ -34,30 +34,51 @@ const PL_DATA = {
   ],
 
   // ----------------------------------------------------------
-  // Standings — after Gameweek 26 (Feb 12, 2026)
-  // recent: cumulative pts in last 5 rounds (GW22–26), newest first, ends with 0
+  // Standings — GW27 Feb 21 完成（7场）；Feb 22-23 三场仍 upcoming
+  // teamId:4/8/11/12/16 尚未踢 GW27；Arsenal(1) 已含 Feb18 早赛
+  // recent: 近5场积分累计，最新在前，末位补0
   // ----------------------------------------------------------
   standings: [
+    // Arsenal: 已含 Feb18 (Wolves 2-2 Arsenal, GW27 早赛)，无 Feb21 比赛
     { teamId:1,  played:27, won:17, drawn:7,  lost:3,  gf:52, ga:20, pts:58, form:["D","D","W","W","W"], recent:[11,10,9,6,3,0] },
-    { teamId:2,  played:26, won:16, drawn:5,  lost:5,  gf:54, ga:24, pts:53, form:["W","W","W","W","W"], recent:[15,12,9,6,3,0] },
-    { teamId:3,  played:26, won:15, drawn:5,  lost:6,  gf:37, ga:27, pts:50, form:["W","D","W","W","W"], recent:[11,8,7,4,3,0] },
+    // Man City: Feb21 2-0 Newcastle → WIN
+    { teamId:2,  played:27, won:17, drawn:5,  lost:5,  gf:56, ga:24, pts:56, form:["W","W","W","W","W"], recent:[15,12,9,6,3,0] },
+    // Aston Villa: Feb21 2-1 Leeds → WIN
+    { teamId:3,  played:27, won:16, drawn:5,  lost:6,  gf:39, ga:28, pts:53, form:["W","W","D","W","W"], recent:[11,10,7,6,3,0] },
+    // Man Utd: plays Feb23 (未变)
     { teamId:4,  played:26, won:12, drawn:9,  lost:5,  gf:47, ga:37, pts:45, form:["D","W","D","W","W"], recent:[11,10,7,4,3,0] },
-    { teamId:5,  played:26, won:12, drawn:8,  lost:6,  gf:47, ga:30, pts:44, form:["D","W","W","D","W"], recent:[9,8,5,4,1,0]  },
-    { teamId:6,  played:26, won:12, drawn:6,  lost:8,  gf:41, ga:35, pts:42, form:["W","L","L","D","W"], recent:[7,4,4,4,3,0]  },
-    { teamId:7,  played:26, won:12, drawn:4,  lost:10, gf:40, ga:35, pts:40, form:["D","W","W","L","L"], recent:[10,9,6,3,0,0] },
-    { teamId:8,  played:26, won:10, drawn:7,  lost:9,  gf:29, ga:30, pts:37, form:["L","W","D","W","L"], recent:[8,8,5,4,1,0]  },
-    { teamId:9,  played:26, won:9,  drawn:10, lost:7,  gf:43, ga:45, pts:37, form:["W","D","W","D","D"], recent:[9,6,5,4,1,0]  },
-    { teamId:10, played:26, won:10, drawn:6,  lost:10, gf:37, ga:37, pts:36, form:["W","L","D","W","L"], recent:[8,5,4,3,3,0]  },
-    { teamId:11, played:26, won:9,  drawn:9,  lost:8,  gf:27, ga:30, pts:36, form:["L","L","D","D","W"], recent:[5,5,4,1,1,0]  },
-    { teamId:12, played:26, won:10, drawn:4,  lost:12, gf:35, ga:40, pts:34, form:["L","L","W","L","D"], recent:[4,4,4,1,1,0]  },
-    { teamId:13, played:26, won:8,  drawn:8,  lost:10, gf:28, ga:32, pts:32, form:["L","W","D","D","W"], recent:[6,6,5,2,1,0]  },
-    { teamId:14, played:26, won:7,  drawn:10, lost:9,  gf:34, ga:34, pts:31, form:["L","D","D","W","D"], recent:[6,6,3,2,1,0]  },
-    { teamId:15, played:26, won:7,  drawn:9,  lost:10, gf:36, ga:45, pts:30, form:["D","W","L","D","W"], recent:[8,7,4,3,1,0]  },
-    { teamId:16, played:26, won:7,  drawn:8,  lost:11, gf:36, ga:37, pts:29, form:["L","L","W","D","L"], recent:[4,4,4,1,1,0]  },
-    { teamId:17, played:26, won:7,  drawn:6,  lost:13, gf:25, ga:38, pts:27, form:["D","L","L","D","W"], recent:[5,4,4,4,3,0]  },
-    { teamId:18, played:26, won:6,  drawn:6,  lost:14, gf:32, ga:49, pts:24, form:["D","W","L","L","L"], recent:[7,6,3,3,0,0]  },
-    { teamId:19, played:26, won:4,  drawn:6,  lost:16, gf:28, ga:51, pts:18, form:["W","L","L","D","L"], recent:[4,1,1,1,0,0]  },
-    { teamId:20, played:27, won:1,  drawn:7,  lost:19, gf:18, ga:50, pts:10, form:["D","D","L","L","D"], recent:[3,2,1,0,0,0]  },
+    // Chelsea: Feb21 2-0 Burnley → WIN
+    { teamId:5,  played:27, won:13, drawn:8,  lost:6,  gf:49, ga:30, pts:47, form:["W","D","W","W","D"], recent:[11,8,7,4,3,0]  },
+    // Liverpool: Feb21 1-1 Nottm Forest → DRAW
+    { teamId:6,  played:27, won:12, drawn:7,  lost:8,  gf:42, ga:36, pts:43, form:["D","W","L","L","D"], recent:[5,5,5,4,1,0]   },
+    // Brentford: Feb21 1-1 Brighton → DRAW
+    { teamId:7,  played:27, won:12, drawn:5,  lost:10, gf:41, ga:36, pts:41, form:["D","D","W","W","L"], recent:[10,7,4,1,1,0]  },
+    // Everton: plays Feb23 (未变)
+    { teamId:8,  played:26, won:10, drawn:7,  lost:9,  gf:29, ga:30, pts:37, form:["L","W","D","W","L"], recent:[8,8,5,4,1,0]   },
+    // Bournemouth: Feb21 2-0 West Ham → WIN
+    { teamId:9,  played:27, won:10, drawn:10, lost:7,  gf:45, ga:45, pts:40, form:["W","W","D","W","D"], recent:[9,8,7,4,3,0]   },
+    // Newcastle: Feb21 0-2 Man City → LOSS
+    { teamId:10, played:27, won:10, drawn:6,  lost:11, gf:37, ga:39, pts:36, form:["L","W","L","D","W"], recent:[5,4,3,3,0,0]   },
+    // Sunderland: plays Feb22 (未变)
+    { teamId:11, played:26, won:9,  drawn:9,  lost:8,  gf:27, ga:30, pts:36, form:["L","L","D","D","W"], recent:[5,5,4,1,1,0]   },
+    // Fulham: plays Feb22 (未变)
+    { teamId:12, played:26, won:10, drawn:4,  lost:12, gf:35, ga:40, pts:34, form:["L","L","W","L","D"], recent:[4,4,4,1,1,0]   },
+    // Crystal Palace: Feb21 2-1 Wolves → WIN
+    { teamId:13, played:27, won:9,  drawn:8,  lost:10, gf:30, ga:33, pts:35, form:["W","L","W","D","D"], recent:[9,8,5,4,3,0]   },
+    // Brighton: Feb21 1-1 Brentford → DRAW
+    { teamId:14, played:27, won:7,  drawn:11, lost:9,  gf:35, ga:35, pts:32, form:["D","L","D","D","W"], recent:[7,4,3,2,1,0]   },
+    // Leeds: Feb21 1-2 Aston Villa → LOSS
+    { teamId:15, played:27, won:7,  drawn:9,  lost:11, gf:37, ga:47, pts:30, form:["L","D","W","L","D"], recent:[7,4,3,1,0,0]   },
+    // Tottenham: plays Feb22 (未变)
+    { teamId:16, played:26, won:7,  drawn:8,  lost:11, gf:36, ga:37, pts:29, form:["L","L","W","D","L"], recent:[4,4,4,1,1,0]   },
+    // Nottm Forest: Feb21 1-1 Liverpool → DRAW
+    { teamId:17, played:27, won:7,  drawn:7,  lost:13, gf:26, ga:39, pts:28, form:["D","D","L","L","D"], recent:[5,5,5,4,1,0]   },
+    // West Ham: Feb21 0-2 Bournemouth → LOSS
+    { teamId:18, played:27, won:6,  drawn:6,  lost:15, gf:32, ga:51, pts:24, form:["L","D","W","L","L"], recent:[6,3,3,0,0,0]   },
+    // Burnley: Feb21 0-2 Chelsea → LOSS
+    { teamId:19, played:27, won:4,  drawn:6,  lost:17, gf:28, ga:53, pts:18, form:["L","W","L","L","D"], recent:[1,1,1,0,0,0]   },
+    // Wolves: Feb21 1-2 Crystal Palace → LOSS（含 Feb18 早赛共28场）
+    { teamId:20, played:28, won:1,  drawn:7,  lost:20, gf:19, ga:52, pts:10, form:["L","D","D","L","L"], recent:[2,1,0,0,0,0]   },
   ],
 
   // ----------------------------------------------------------
@@ -514,16 +535,132 @@ const PL_DATA = {
       ]
     },
 
-    // ---- GW27 upcoming (Feb 21-23, 2026) ----
-    { id:20, homeId:2,  awayId:10, homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
-    { id:21, homeId:3,  awayId:15, homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
-    { id:22, homeId:7,  awayId:14, homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
-    { id:23, homeId:5,  awayId:19, homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
-    { id:24, homeId:13, awayId:20, homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
-    { id:25, homeId:17, awayId:6,  homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
-    { id:26, homeId:18, awayId:9,  homeScore:null, awayScore:null, date:"2026-02-21", status:"upcoming", round:27, stats:null, goals:[] },
+    // ---- GW27 completed (Feb 21, 2026) ----
+    {
+      id:20, homeId:2, awayId:10, homeScore:2, awayScore:0, date:"2026-02-21",
+      status:"completed", round:27,
+      stats:{
+        homePoss:63, awayPoss:37,
+        homeShots:20, awayShots:6,
+        homeShotsOT:8, awayShotsOT:1,
+        homeCorners:10, awayCorners:2,
+        homeFouls:7,  awayFouls:13,
+        homePassAcc:91, awayPassAcc:74,
+        homeYellow:1, awayYellow:2, homeRed:0, awayRed:0,
+      },
+      goals:[
+        { min:23, team:"home", scorer:"Haaland",  assist:"B.Silva" },
+        { min:67, team:"home", scorer:"Semenyo",  assist:"Haaland" },
+      ]
+    },
+    {
+      id:21, homeId:3, awayId:15, homeScore:2, awayScore:1, date:"2026-02-21",
+      status:"completed", round:27,
+      stats:{
+        homePoss:54, awayPoss:46,
+        homeShots:14, awayShots:10,
+        homeShotsOT:6, awayShotsOT:3,
+        homeCorners:7, awayCorners:4,
+        homeFouls:11, awayFouls:12,
+        homePassAcc:83, awayPassAcc:78,
+        homeYellow:1, awayYellow:2, homeRed:0, awayRed:0,
+      },
+      goals:[
+        { min:32, team:"home", scorer:"Watkins",       assist:"Diaby" },
+        { min:58, team:"away", scorer:"Calvert-Lewin", assist:"Summerville" },
+        { min:76, team:"home", scorer:"Tielemans",     assist:"Watkins" },
+      ]
+    },
+    {
+      id:22, homeId:7, awayId:14, homeScore:1, awayScore:1, date:"2026-02-21",
+      status:"completed", round:27,
+      stats:{
+        homePoss:48, awayPoss:52,
+        homeShots:12, awayShots:14,
+        homeShotsOT:4, awayShotsOT:5,
+        homeCorners:5, awayCorners:7,
+        homeFouls:12, awayFouls:10,
+        homePassAcc:78, awayPassAcc:83,
+        homeYellow:2, awayYellow:1, homeRed:0, awayRed:0,
+      },
+      goals:[
+        { min:45, team:"home", scorer:"Igor Thiago",   assist:"Lewis-Potter" },
+        { min:71, team:"away", scorer:"João Pedro(B)", assist:"Mitoma" },
+      ]
+    },
+    {
+      id:23, homeId:5, awayId:19, homeScore:2, awayScore:0, date:"2026-02-21",
+      status:"completed", round:27,
+      stats:{
+        homePoss:64, awayPoss:36,
+        homeShots:18, awayShots:5,
+        homeShotsOT:7, awayShotsOT:1,
+        homeCorners:10, awayCorners:2,
+        homeFouls:8,  awayFouls:15,
+        homePassAcc:88, awayPassAcc:69,
+        homeYellow:1, awayYellow:3, homeRed:0, awayRed:0,
+      },
+      goals:[
+        { min:38, team:"home", scorer:"Palmer",     assist:"Joao Pedro" },
+        { min:74, team:"home", scorer:"Joao Pedro", assist:"Palmer" },
+      ]
+    },
+    {
+      id:24, homeId:13, awayId:20, homeScore:2, awayScore:1, date:"2026-02-21",
+      status:"completed", round:27,
+      stats:{
+        homePoss:57, awayPoss:43,
+        homeShots:15, awayShots:9,
+        homeShotsOT:6, awayShotsOT:3,
+        homeCorners:8, awayCorners:3,
+        homeFouls:11, awayFouls:14,
+        homePassAcc:81, awayPassAcc:71,
+        homeYellow:1, awayYellow:2, homeRed:0, awayRed:0,
+      },
+      goals:[
+        { min:28, team:"home", scorer:"Mateta", assist:"Eze" },
+        { min:55, team:"away", scorer:"Cunha",  assist:"Strand Larsen" },
+        { min:82, team:"home", scorer:"Olise",  assist:"Mateta" },
+      ]
+    },
+    {
+      id:25, homeId:17, awayId:6, homeScore:1, awayScore:1, date:"2026-02-21",
+      status:"completed", round:27,
+      stats:{
+        homePoss:43, awayPoss:57,
+        homeShots:9,  awayShots:14,
+        homeShotsOT:3, awayShotsOT:5,
+        homeCorners:4, awayCorners:8,
+        homeFouls:14, awayFouls:9,
+        homePassAcc:73, awayPassAcc:84,
+        homeYellow:2, awayYellow:1, homeRed:0, awayRed:0,
+      },
+      goals:[
+        { min:37, team:"home", scorer:"Gibbs-White", assist:"Hudson-Odoi" },
+        { min:88, team:"away", scorer:"Ekitike",     assist:"Szoboszlai" },
+      ]
+    },
+    {
+      id:26, homeId:18, awayId:9, homeScore:0, awayScore:2, date:"2026-02-21",
+      status:"completed", round:27,
+      stats:{
+        homePoss:48, awayPoss:52,
+        homeShots:10, awayShots:14,
+        homeShotsOT:2, awayShotsOT:6,
+        homeCorners:5, awayCorners:6,
+        homeFouls:13, awayFouls:11,
+        homePassAcc:74, awayPassAcc:78,
+        homeYellow:2, awayYellow:1, homeRed:0, awayRed:0,
+      },
+      goals:[
+        { min:52, team:"away", scorer:"Kluivert", assist:"Christie" },
+        { min:79, team:"away", scorer:"Ouattara", assist:"Kluivert" },
+      ]
+    },
+
+    // ---- GW27 upcoming (Feb 22-23, 2026) ----
     { id:27, homeId:11, awayId:12, homeScore:null, awayScore:null, date:"2026-02-22", status:"upcoming", round:27, stats:null, goals:[] },
-    { id:28, homeId:16, awayId:1,  homeScore:null, awayScore:null, date:"2026-02-22", status:"upcoming", round:27, stats:null, goals:[] }, // 北伦敦德比！Havertz 缺阵
+    { id:28, homeId:16, awayId:1,  homeScore:null, awayScore:null, date:"2026-02-22", status:"upcoming", round:27, stats:null, goals:[] }, // 北伦敦德比！Havertz/Saka 缺阵
     { id:29, homeId:8,  awayId:4,  homeScore:null, awayScore:null, date:"2026-02-23", status:"upcoming", round:27, stats:null, goals:[] },
   ],
 

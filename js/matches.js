@@ -237,6 +237,10 @@ const MatchesModule = (() => {
   function renderStatsBars(m) {
     const s = m.stats;
     const container = document.getElementById('detail-stats-bars');
+    if (!s) {
+      container.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:8px 0">暂无统计数据</div>';
+      return;
+    }
 
     const rows = [
       { label:'控球率 %', home: s.homePoss, away: s.awayPoss, max: 100 },
