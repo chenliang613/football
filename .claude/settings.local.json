@@ -33,7 +33,18 @@
       "WebFetch(domain:www.fotmob.com)",
       "Bash(wc:*)",
       "Bash(grep:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "WebFetch(domain:data.7m.com.cn)",
+      "WebFetch(domain:www.sportsmole.co.uk)",
+      "Bash(node --version:*)",
+      "Bash(node scripts/update-data.js:*)",
+      "WebFetch(domain:football-knockout.co.uk)",
+      "WebFetch(domain:www.oddsportal.com)",
+      "WebFetch(domain:sports.betmgm.com)",
+      "WebFetch(domain:www.theyscored.com)",
+      "WebFetch(domain:sccgmanagement.com)",
+      "WebFetch(domain:www.vegasodds.com)",
+      "WebFetch(domain:www.sportsboom.co.uk)"
     ]
   }
 }

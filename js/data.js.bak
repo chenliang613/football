@@ -1,7 +1,7 @@
 // ============================================================
 // data.js — Premier League 2025/26 Real Data
-// Last updated: GW27 fully completed
-// GW28 upcoming
+// Last updated: GW27 fully completed (Feb 18/21/22/23)
+// GW28 (Feb 28 – Mar 2) upcoming
 // Sources: Premier League official, BBC Sport, Sky Sports, ESPN
 // ============================================================
 
@@ -38,48 +38,46 @@ const PL_DATA = {
   // recent: 近5场后缀积分和，form[]最新在前，recent[0]=5场总分，recent[5]=0基线
   // ----------------------------------------------------------
   standings: [
-  // Standings — GW28 数据（football-data.org 实时）
-  // recent: 近5场后缀积分和，form[]最新在前，recent[0]=5场总分，recent[5]=0基线
-    // Arsenal: P28 W18 D7 L3 Pts61
-    { teamId:1 , played:28, won:18, drawn:7, lost:3, gf:56, ga:21, pts:61, form:["W","D","D","W","W"], recent:[11,8,5,4,3,0] },
-    // Man City: P27 W17 D5 L5 Pts56
-    { teamId:2 , played:27, won:17, drawn:5, lost:5, gf:56, ga:25, pts:56, form:["W","W","W","D","W"], recent:[13,10,9,6,3,0] },
-    // Aston Villa: P27 W15 D6 L6 Pts51
-    { teamId:3 , played:27, won:15, drawn:6, lost:6, gf:38, ga:28, pts:51, form:["D","W","D","L","W"], recent:[8,5,5,4,1,0] },
-    // Man United: P27 W13 D9 L5 Pts48
-    { teamId:4 , played:27, won:13, drawn:9, lost:5, gf:48, ga:37, pts:48, form:["W","D","W","W","W"], recent:[13,10,7,4,3,0] },
-    // Chelsea: P27 W12 D9 L6 Pts45
-    { teamId:5 , played:27, won:12, drawn:9, lost:6, gf:48, ga:31, pts:45, form:["D","D","W","W","W"], recent:[11,8,5,2,1,0] },
-    // Liverpool: P27 W13 D6 L8 Pts45
-    { teamId:6 , played:27, won:13, drawn:6, lost:8, gf:42, ga:35, pts:45, form:["W","W","L","W","L"], recent:[9,9,6,6,3,0] },
-    // Brentford: P27 W12 D4 L11 Pts40
-    { teamId:7 , played:27, won:12, drawn:4, lost:11, gf:40, ga:37, pts:40, form:["L","D","W","W","L"], recent:[7,7,4,1,0,0] },
-    // Bournemouth: P27 W9 D11 L7 Pts38
-    { teamId:9 , played:27, won:9, drawn:11, lost:7, gf:43, ga:45, pts:38, form:["D","W","D","W","W"], recent:[11,8,5,4,1,0] },
-    // Everton: P27 W10 D7 L10 Pts37
-    { teamId:8 , played:27, won:10, drawn:7, lost:10, gf:29, ga:31, pts:37, form:["L","L","W","D","D"], recent:[5,4,3,0,0,0] },
-    // Fulham: P27 W11 D4 L12 Pts37
-    { teamId:12, played:27, won:11, drawn:4, lost:12, gf:38, ga:41, pts:37, form:["W","L","L","L","W"], recent:[6,3,3,3,3,0] },
-    // Newcastle: P27 W10 D6 L11 Pts36
-    { teamId:10, played:27, won:10, drawn:6, lost:11, gf:38, ga:39, pts:36, form:["L","W","L","L","L"], recent:[3,3,3,3,0,0] },
-    // Sunderland: P27 W9 D9 L9 Pts36
-    { teamId:11, played:27, won:9, drawn:9, lost:9, gf:28, ga:33, pts:36, form:["L","L","L","W","L"], recent:[3,3,0,0,0,0] },
-    // Crystal Palace: P27 W9 D8 L10 Pts35
-    { teamId:13, played:27, won:9, drawn:8, lost:10, gf:29, ga:32, pts:35, form:["W","L","W","D","L"], recent:[7,7,6,3,3,0] },
-    // Brighton Hove: P27 W8 D10 L9 Pts34
-    { teamId:14, played:27, won:8, drawn:10, lost:9, gf:36, ga:34, pts:34, form:["W","L","L","D","L"], recent:[4,4,3,3,3,0] },
-    // Leeds United: P27 W7 D10 L10 Pts31
-    { teamId:15, played:27, won:7, drawn:10, lost:10, gf:37, ga:46, pts:31, form:["D","D","W","L","D"], recent:[6,5,5,2,1,0] },
-    // Tottenham: P27 W7 D8 L12 Pts29
-    { teamId:16, played:27, won:7, drawn:8, lost:12, gf:37, ga:41, pts:29, form:["L","L","L","D","D"], recent:[2,1,0,0,0,0] },
-    // Nottingham: P27 W7 D6 L14 Pts27
-    { teamId:17, played:27, won:7, drawn:6, lost:14, gf:25, ga:39, pts:27, form:["L","D","L","D","W"], recent:[5,2,1,1,0,0] },
-    // West Ham: P27 W6 D7 L14 Pts25
-    { teamId:18, played:27, won:6, drawn:7, lost:14, gf:32, ga:49, pts:25, form:["D","D","W","L","W"], recent:[8,5,5,2,1,0] },
-    // Burnley: P27 W4 D7 L16 Pts19
-    { teamId:19, played:27, won:4, drawn:7, lost:16, gf:29, ga:52, pts:19, form:["D","W","L","L","D"], recent:[5,4,4,4,1,0] },
-    // Wolverhampton: P28 W1 D7 L20 Pts10
-    { teamId:20, played:28, won:1, drawn:7, lost:20, gf:18, ga:51, pts:10, form:["L","D","D","L","L"], recent:[2,2,2,1,0,0] },
+    // Arsenal: GW27 Feb18 D + Feb22 W(4-1 Tottenham) → 28场
+    { teamId:1,  played:28, won:18, drawn:7,  lost:3,  gf:56, ga:21, pts:61, form:["W","D","D","W","W"], recent:[11,8,7,6,3,0] },
+    // Man City: Feb21 2-1 Newcastle → WIN
+    { teamId:2,  played:27, won:17, drawn:5,  lost:5,  gf:56, ga:25, pts:56, form:["W","W","W","W","W"], recent:[15,12,9,6,3,0] },
+    // Aston Villa: Feb21 2-1 Leeds → WIN
+    { teamId:3,  played:27, won:16, drawn:5,  lost:6,  gf:39, ga:28, pts:53, form:["W","W","D","W","W"], recent:[11,10,7,6,3,0] },
+    // Man Utd: Feb23 1-0 Everton → WIN
+    { teamId:4,  played:27, won:13, drawn:9,  lost:5,  gf:48, ga:37, pts:48, form:["W","D","W","D","W"], recent:[11,8,7,4,3,0] },
+    // Chelsea: Feb21 2-0 Burnley → WIN
+    { teamId:5,  played:27, won:13, drawn:8,  lost:6,  gf:49, ga:30, pts:47, form:["W","D","W","W","D"], recent:[11,8,7,4,3,0]  },
+    // Liverpool: Feb21 1-1 Nottm Forest → DRAW
+    { teamId:6,  played:27, won:12, drawn:7,  lost:8,  gf:42, ga:36, pts:43, form:["D","W","L","L","D"], recent:[5,5,5,4,1,0]   },
+    // Brentford: Feb21 1-1 Brighton → DRAW
+    { teamId:7,  played:27, won:12, drawn:5,  lost:10, gf:41, ga:36, pts:41, form:["D","D","W","W","L"], recent:[10,7,4,1,1,0]  },
+    // Everton: Feb23 0-1 Man Utd → LOSS
+    { teamId:8,  played:27, won:10, drawn:7,  lost:10, gf:29, ga:31, pts:37, form:["L","L","W","D","W"], recent:[7,7,7,4,3,0]   },
+    // Bournemouth: Feb21 2-0 West Ham → WIN
+    { teamId:9,  played:27, won:10, drawn:10, lost:7,  gf:45, ga:45, pts:40, form:["W","W","D","W","D"], recent:[9,8,7,4,3,0]   },
+    // Newcastle: Feb21 1-2 Man City → LOSS
+    { teamId:10, played:27, won:10, drawn:6,  lost:11, gf:38, ga:39, pts:36, form:["L","W","L","D","W"], recent:[5,4,3,3,0,0]   },
+    // Sunderland: Feb22 1-3 Fulham → LOSS
+    { teamId:11, played:27, won:9,  drawn:9,  lost:9,  gf:28, ga:33, pts:36, form:["L","L","L","D","D"], recent:[2,2,2,2,1,0]   },
+    // Fulham: Feb22 3-1 Sunderland → WIN
+    { teamId:12, played:27, won:11, drawn:4,  lost:12, gf:38, ga:41, pts:37, form:["W","L","L","W","L"], recent:[6,3,3,3,0,0]   },
+    // Crystal Palace: Feb21 2-1 Wolves → WIN
+    { teamId:13, played:27, won:9,  drawn:8,  lost:10, gf:30, ga:33, pts:35, form:["W","L","W","D","D"], recent:[9,8,5,4,3,0]   },
+    // Brighton: Feb21 1-1 Brentford → DRAW
+    { teamId:14, played:27, won:7,  drawn:11, lost:9,  gf:35, ga:35, pts:32, form:["D","L","D","D","W"], recent:[7,4,3,2,1,0]   },
+    // Leeds: Feb21 1-2 Aston Villa → LOSS
+    { teamId:15, played:27, won:7,  drawn:9,  lost:11, gf:37, ga:47, pts:30, form:["L","D","W","L","D"], recent:[7,4,3,1,0,0]   },
+    // Tottenham: Feb22 1-4 Arsenal → LOSS
+    { teamId:16, played:27, won:7,  drawn:8,  lost:12, gf:37, ga:41, pts:29, form:["L","L","L","W","D"], recent:[4,4,4,4,1,0]   },
+    // Nottm Forest: Feb21 1-1 Liverpool → DRAW
+    { teamId:17, played:27, won:7,  drawn:7,  lost:13, gf:26, ga:39, pts:28, form:["D","D","L","L","D"], recent:[5,5,5,4,1,0]   },
+    // West Ham: Feb21 0-2 Bournemouth → LOSS
+    { teamId:18, played:27, won:6,  drawn:6,  lost:15, gf:32, ga:51, pts:24, form:["L","D","W","L","L"], recent:[6,3,3,0,0,0]   },
+    // Burnley: Feb21 0-2 Chelsea → LOSS
+    { teamId:19, played:27, won:4,  drawn:6,  lost:17, gf:28, ga:53, pts:18, form:["L","W","L","L","D"], recent:[1,1,1,0,0,0]   },
+    // Wolves: Feb21 1-2 Crystal Palace → LOSS（含 Feb18 早赛共28场）
+    { teamId:20, played:28, won:1,  drawn:7,  lost:20, gf:19, ga:52, pts:10, form:["L","D","D","L","L"], recent:[2,1,0,0,0,0]   },
   ],
 
   // ----------------------------------------------------------
@@ -719,29 +717,6 @@ const PL_DATA = {
         { min:71, team:"away", scorer:"Sesko", assist:"Mbeumo" },
       ]
     },
-  
-
-    // ---- GW28 (2026-02-27, 2026-02-28, 2026-03-01) [0/10 done] ----
-    // Wolverhampton vs Aston Villa (2026-02-27)
-    { id:31, homeId:20, awayId:3, homeScore:null, awayScore:null, date:"2026-02-27", status:"upcoming", round:28, stats:null, goals:[] },
-    // Bournemouth vs Sunderland (2026-02-28)
-    { id:32, homeId:9, awayId:11, homeScore:null, awayScore:null, date:"2026-02-28", status:"upcoming", round:28, stats:null, goals:[] },
-    // Burnley vs Brentford (2026-02-28)
-    { id:33, homeId:19, awayId:7, homeScore:null, awayScore:null, date:"2026-02-28", status:"upcoming", round:28, stats:null, goals:[] },
-    // Liverpool vs West Ham (2026-02-28)
-    { id:34, homeId:6, awayId:18, homeScore:null, awayScore:null, date:"2026-02-28", status:"upcoming", round:28, stats:null, goals:[] },
-    // Newcastle vs Everton (2026-02-28)
-    { id:35, homeId:10, awayId:8, homeScore:null, awayScore:null, date:"2026-02-28", status:"upcoming", round:28, stats:null, goals:[] },
-    // Leeds United vs Man City (2026-02-28)
-    { id:36, homeId:15, awayId:2, homeScore:null, awayScore:null, date:"2026-02-28", status:"upcoming", round:28, stats:null, goals:[] },
-    // Brighton Hove vs Nottingham (2026-03-01)
-    { id:37, homeId:14, awayId:17, homeScore:null, awayScore:null, date:"2026-03-01", status:"upcoming", round:28, stats:null, goals:[] },
-    // Fulham vs Tottenham (2026-03-01)
-    { id:38, homeId:12, awayId:16, homeScore:null, awayScore:null, date:"2026-03-01", status:"upcoming", round:28, stats:null, goals:[] },
-    // Man United vs Crystal Palace (2026-03-01)
-    { id:39, homeId:4, awayId:13, homeScore:null, awayScore:null, date:"2026-03-01", status:"upcoming", round:28, stats:null, goals:[] },
-    // Arsenal vs Chelsea (2026-03-01)
-    { id:40, homeId:1, awayId:5, homeScore:null, awayScore:null, date:"2026-03-01", status:"upcoming", round:28, stats:null, goals:[] },
   ],
 
   // ----------------------------------------------------------
@@ -928,18 +903,6 @@ const PL_DATA = {
     "11-12": { home: 2.70, draw: 3.20, away: 2.70 },  // Sunderland vs Fulham
     "16-1":  { home: 3.50, draw: 3.60, away: 2.05 },  // Tottenham vs Arsenal
     "8-4":   { home: 2.90, draw: 3.20, away: 2.50 },  // Everton vs Man Utd
-
-    // GW28 赛前开盘赔率（Feb 28 – Mar 2, 2026）
-    "20-3":  { home: 4.08, draw: 3.88, away: 1.86 },  // Wolves vs Aston Villa
-    "9-11":  { home: 1.75, draw: 3.70, away: 4.50 },  // Bournemouth vs Sunderland
-    "19-7":  { home: 4.30, draw: 3.83, away: 1.84 },  // Burnley vs Brentford
-    "6-18":  { home: 1.42, draw: 5.50, away: 8.00 },  // Liverpool vs West Ham
-    "10-8":  { home: 1.71, draw: 3.70, away: 4.50 },  // Newcastle vs Everton
-    "15-2":  { home: 6.00, draw: 4.20, away: 1.60 },  // Leeds vs Man City
-    "14-17": { home: 2.08, draw: 3.45, away: 3.25 },  // Brighton vs Nottm Forest
-    "12-16": { home: 2.20, draw: 3.40, away: 3.20 },  // Fulham vs Tottenham
-    "4-13":  { home: 1.58, draw: 3.80, away: 5.50 },  // Man Utd vs Crystal Palace
-    "1-5":   { home: 1.62, draw: 3.80, away: 5.50 },  // Arsenal vs Chelsea
   },
 
   // ----------------------------------------------------------
