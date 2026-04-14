@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026世界杯冠军预测系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===== Navbar ===== -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a class="navbar-brand" href="#">
+            <span class="brand-logo">&nbsp;</span>
+            <div>
+                <div class="brand-title">世界杯冠军预测系统</div>
+                <div class="brand-sub">World Cup 2026 Champion Prediction</div>
+            </div>
+        </a>
+        <span class="navbar-badge">2026 USA / MEX / CAN</span>
+        <a class="navbar-link" href="../index.html">&larr; 英超分析平台</a>
+    </div>
+</nav>
+
+<div class="main-content">
+
+    <!-- ===== KPI Cards ===== -->
+    <section class="section">
+        <div class="grid-4" id="kpi-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(0,191,255,0.15)">&#9917;</div>
+                <div>
+                    <div class="stat-value" id="kpi-teams">10</div>
+                    <div class="stat-label">分析球队 <span class="stat-sub">Teams</span></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(255,215,0,0.15)">&nbsp;</div>
+                <div>
+                    <div class="stat-value" id="kpi-titles">16</div>
+                    <div class="stat-label">历届冠军数 <span class="stat-sub">Titles</span></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(0,230,118,0.15)">&#128176;</div>
+                <div>
+                    <div class="stat-value" id="kpi-value">--</div>
+                    <div class="stat-label">总身价(亿欧) <span class="stat-sub">Total Value</span></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(233,0,82,0.15)">&#127942;</div>
+                <div>
+                    <div class="stat-value" id="kpi-champion">--</div>
+                    <div class="stat-label">预测冠军 <span class="stat-sub">Predicted</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Weight Controls ===== -->
+    <section class="section">
+        <div class="section-header">
+            <span class="section-icon">&#128202;</span>
+            <span class="section-title">分析维度权重调节</span>
+            <span class="section-sub">/ Dimension Weight Adjustment</span>
+        </div>
+        <div class="weight-controls">
+            <div class="weight-grid">
+                <div class="weight-item">
+                    <div class="weight-color" style="background:#00bfff"></div>
+                    <div class="weight-info">
+                        <div class="weight-name">德转身价</div>
+                        <div class="weight-name-en">Squad Value</div>
+                    </div>
+                    <input type="range" class="weight-slider" id="slider-squadValue" min="0" max="100" value="40">
+                    <span class="weight-val" id="val-squadValue">40%</span>
+                </div>
+                <div class="weight-item">
+                    <div class="weight-color" style="background:#00e676"></div>
+                    <div class="weight-info">
+                        <div class="weight-name">球员状态</div>
+                        <div class="weight-name-en">Key Players</div>
+                    </div>
+                    <input type="range" class="weight-slider" id="slider-keyPlayers" min="0" max="100" value="20">
+                    <span class="weight-val" id="val-keyPlayers">20%</span>
+                </div>
+                <div class="weight-item">
+                    <div class="weight-color" style="background:#ff6b35"></div>
+                    <div class="weight-info">
+                        <div class="weight-name">历史战绩</div>
+                        <div class="weight-name-en">History</div>
+                    </div>
+                    <input type="range" class="weight-slider" id="slider-history" min="0" max="100" value="20">
+                    <span class="weight-val" id="val-history">20%</span>
+                </div>
+                <div class="weight-item">
+                    <div class="weight-color" style="background:#ffd600"></div>
+                    <div class="weight-info">
+                        <div class="weight-name">其他</div>
+                        <div class="weight-name-en">Other</div>
+                    </div>
+                    <input type="range" class="weight-slider" id="slider-other" min="0" max="100" value="20">
+                    <span class="weight-val" id="val-other">20%</span>
+                </div>
+            </div>
+            <div class="weight-actions">
+                <button class="btn" id="btn-reset-weights">&#8635; 恢复默认权重</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Top 3 Podium ===== -->
+    <section class="section">
+        <div class="section-header">
+            <span class="section-icon">&#127942;</span>
+            <span class="section-title">夺冠预测 TOP 3</span>
+            <span class="section-sub">/ Championship Prediction</span>
+        </div>
+        <div class="podium-grid" id="podium-grid">
+            <!-- Dynamically rendered -->
+        </div>
+    </section>
+
+    <!-- ===== Probability Ranking ===== -->
+    <section class="section">
+        <div class="section-header">
+            <span class="section-icon">&#128200;</span>
+            <span class="section-title">夺冠概率排行</span>
+            <span class="section-sub">/ Championship Probability Ranking</span>
+        </div>
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">概率排名 / Probability Ranking</div>
+                <div class="champ-list" id="champ-list">
+                    <!-- Dynamically rendered -->
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Top 5 概率分布 / Probability Distribution</div>
+                <div class="chart-container chart-md">
+                    <canvas id="chart-doughnut"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Dimension Breakdown ===== -->
+    <section class="section">
+        <div class="section-header">
+            <span class="section-icon">&#128209;</span>
+            <span class="section-title">四维分数对比</span>
+            <span class="section-sub">/ Four-Dimension Score Comparison</span>
+        </div>
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">维度堆叠图 / Stacked Breakdown</div>
+                <div class="chart-container chart-lg">
+                    <canvas id="chart-stacked"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">评分明细 / Score Details</div>
+                <div class="table-wrapper">
+                    <table class="dim-table" id="dim-table">
+                        <thead>
+                            <tr>
+                                <th data-sort="rank">#</th>
+                                <th data-sort="name">球队</th>
+                                <th data-sort="squadValue">德转身价</th>
+                                <th data-sort="keyPlayers">球员状态</th>
+                                <th data-sort="history">历史战绩</th>
+                                <th data-sort="other">其他</th>
+                                <th data-sort="composite">综合分</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dim-table-body">
+                            <!-- Dynamically rendered -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Team Selection Grid ===== -->
+    <section class="section">
+        <div class="section-header">
+            <span class="section-icon">&#127758;</span>
+            <span class="section-title">球队详情 (点击选择，最多2队对比)</span>
+            <span class="section-sub">/ Team Details - Click to Compare</span>
+        </div>
+        <div class="team-grid" id="team-grid">
+            <!-- Dynamically rendered -->
+        </div>
+    </section>
+
+    <!-- ===== Team Detail Panel ===== -->
+    <section class="section">
+        <div class="detail-panel" id="detail-panel">
+            <div id="detail-content">
+                <!-- Dynamically rendered -->
+            </div>
+            <div class="detail-grid" style="margin-top:20px">
+                <div>
+                    <div class="card-title">四维雷达图 / Radar Chart</div>
+                    <div class="chart-container chart-md">
+                        <canvas id="chart-radar"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="card-title">关键球员 / Key Players</div>
+                    <div class="player-list" id="player-list">
+                        <!-- Dynamically rendered -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- Scripts -->
+<script src="js/data.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
